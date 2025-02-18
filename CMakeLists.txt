@@ -15,7 +15,7 @@ include_directories(${CMAKE_SOURCE_DIR}/core/include/containers)
 
 file(GLOB CORE_SOURCES "${CMAKE_SOURCE_DIR}/core/src/*.cpp")
 file(GLOB CORE_HEADERS "${CMAKE_SOURCE_DIR}/core/include/*.hpp")
-file(GLOB CONTAINERS_HEADERS "${CMAKE_SOURCE_DIR}/include/containers/*.hpp")
+file(GLOB CONTAINERS_HEADERS "${CMAKE_SOURCE_DIR}/core/include/containers/*.hpp")
 
 add_library(core ${CORE_SOURCES} ${CORE_HEADERS} ${CONTAINERS_HEADERS})
 
