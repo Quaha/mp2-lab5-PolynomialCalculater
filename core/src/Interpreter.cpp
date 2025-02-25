@@ -203,7 +203,7 @@ vector<Data> Interpreter::LexicalAnalyzer::divideIntoTokens(const string& line) 
 			}
 			else if (curr_status == VARIABLE) {
 				
-				if (!global_memory->program_data.exists(stack)) {
+				if (!global_memory->program_data.isExist(stack)) {
 					tokens.push_back(Data(VARIABLE, stack));
 				}
 				else {
@@ -220,7 +220,7 @@ vector<Data> Interpreter::LexicalAnalyzer::divideIntoTokens(const string& line) 
 				}
 			}
 			else if (curr_status == FUNCTION) {
-				if (!global_memory->function_data.exists(stack)) {
+				if (!global_memory->function_data.isExist(stack)) {
 					throw std::runtime_error("ERROR: a nonexistent function was found!");
 				}
 				else {
