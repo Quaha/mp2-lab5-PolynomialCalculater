@@ -33,6 +33,8 @@ void processTypesOfSymbols(Interpreter::LexicalAnalyzer& analyzer) {
 
 	analyzer.allowed_symbols.insert('.');
 
+	analyzer.allowed_symbols.insert('^');
+
 	// Degits symbols
 	for (char C = '0'; C <= '9'; ++C) {
 		analyzer.digits_symbols.insert(C);
@@ -100,9 +102,11 @@ void buildLexicalAnalyzerAutomat(Interpreter::LexicalAnalyzer& analyzer) {
 		analyzer.tokens_aut.addTransition(0, 30, ')');
 
 		for (char C: analyzer.names_symbols) {
-			analyzer.tokens_aut.addTransition(0, 20, C);
+			if (C != 'x') {
+				analyzer.tokens_aut.addTransition(0, 20, C);
+			}
 		}
-
+		analyzer.tokens_aut.addTransition(0, 21, 'x');
 	}
 
 	{ // 10
@@ -119,8 +123,103 @@ void buildLexicalAnalyzerAutomat(Interpreter::LexicalAnalyzer& analyzer) {
 		analyzer.tokens_aut.addTransition(20, 30, '(');
 	}
 
+	{ // 21
+		for (char C : analyzer.names_symbols) {
+			analyzer.tokens_aut.addTransition(21, 20, C);
+		}
+		for (char C : analyzer.digits_symbols) {
+			analyzer.tokens_aut.addTransition(21, 20, C);
+		}
+		analyzer.tokens_aut.addTransition(21, 30, '(');
+		analyzer.tokens_aut.addTransition(21, 50, '^');
+	}
+
 	{ // 30
 
+	}
+
+	{ // 40
+		for (char C : analyzer.digits_symbols) {
+			analyzer.tokens_aut.addTransition(40, 40, C);
+		}
+		analyzer.tokens_aut.addTransition(40, 42, '.');
+	}
+
+	{ // 41
+		analyzer.tokens_aut.addTransition(41, 42, '.');
+	}
+
+	{ // 42
+		for (char C : analyzer.digits_symbols) {
+			analyzer.tokens_aut.addTransition(42, 43, C);
+		}
+	}
+
+	{ // 43
+		for (char C : analyzer.digits_symbols) {
+			analyzer.tokens_aut.addTransition(43, 43, C);
+		}
+	}
+
+	{ // 50
+		for (char C = '1'; C <= '9'; C++) {
+			analyzer.tokens_aut.addTransition(50, 52, C);
+		}
+		analyzer.tokens_aut.addTransition(50, 51, '0');
+	}
+
+	{ // 51
+		analyzer.tokens_aut.addTransition(51, 53, 'y');
+	}
+
+	{ // 52
+		analyzer.tokens_aut.addTransition(52, 53, 'y');
+		for (char C : analyzer.digits_symbols) {
+			analyzer.tokens_aut.addTransition(52, 52, C);
+		}
+	}
+
+	{ // 53
+		analyzer.tokens_aut.addTransition(53, 54, '^');
+	}
+
+	{ // 54
+		for (char C = '1'; C <= '9'; C++) {
+			analyzer.tokens_aut.addTransition(54, 56, C);
+		}
+		analyzer.tokens_aut.addTransition(54, 55, '0');
+	}
+
+	{ // 55
+		analyzer.tokens_aut.addTransition(55, 57, 'z');
+	}
+
+	{ // 56
+		analyzer.tokens_aut.addTransition(56, 57, 'y');
+		for (char C : analyzer.digits_symbols) {
+			analyzer.tokens_aut.addTransition(56, 56, C);
+		}
+	}
+
+	{ // 57
+		analyzer.tokens_aut.addTransition(57, 58, '^');
+	}
+
+	{ // 58
+		analyzer.tokens_aut.addTransition(58, 59, '0');
+		for (char C = '1'; C <= '9'; C++) {
+			analyzer.tokens_aut.addTransition(58, 60, C);
+		}
+	}
+
+	{ // 59
+
+	}
+
+	{ // 60
+		for (char C = '0'; C <= '9'; C++) {
+			analyzer.tokens_aut.addTransition(60, 60, C);
+		}
 	}
 
 
@@ -174,7 +273,7 @@ vector<Data> Interpreter::LexicalAnalyzer::divideIntoTokens(const string& line) 
 			if (curr_status == NONE) {
 				throw std::runtime_error("ERROR: a lexical error!");
 			}
-			else if (curr_status == INTEGER ||
+			else if (curr_status == POLYNOMIAL ||
 					 curr_status == REAL ||
 					 curr_status == SPECIAL_SYMBOL ||
 					 curr_status == OPERATOR){
@@ -188,8 +287,8 @@ vector<Data> Interpreter::LexicalAnalyzer::divideIntoTokens(const string& line) 
 				}
 				else {
 					type variable_type = global_memory->program_data.getData(stack).getType();
-					if (variable_type == INTEGER) {
-						tokens.push_back(Data(INTEGER_VARIABLE, stack));
+					if (variable_type == POLYNOMIAL) {
+						tokens.push_back(Data(POLYNOMIAL_VARIABLE, stack));
 					}
 					else if (variable_type == REAL) {
 						tokens.push_back(Data(REAL_VARIABLE, stack));
@@ -235,7 +334,7 @@ Interpreter::SerialAnalyzer::SerialAnalyzer() {
 		allowed[i].resize(STATUSES_COUNT, true);
 	}
 
-	vector<type> values_statuses = { INTEGER, REAL, INTEGER_VARIABLE, REAL_VARIABLE, VARIABLE };
+	vector<type> values_statuses = { POLYNOMIAL, REAL, POLYNOMIAL_VARIABLE, REAL_VARIABLE, VARIABLE };
 	for (int i = 0; i < values_statuses.size(); i++) {
 		for (int j = 0; j < values_statuses.size(); j++) {
 			allowed[i][j] = false;
@@ -343,10 +442,10 @@ Data Interpreter::execute(const string& line) {
 			int b = 4;
 		}
 
-		if (curr_token.getType() == INTEGER ||
+		if (curr_token.getType() == POLYNOMIAL ||
 			curr_token.getType() == REAL ||
 			curr_token.getType() == VARIABLE ||
-			curr_token.getType() == INTEGER_VARIABLE ||
+			curr_token.getType() == POLYNOMIAL_VARIABLE ||
 			curr_token.getType() == REAL_VARIABLE) {
 			values.push_back(curr_token);
 

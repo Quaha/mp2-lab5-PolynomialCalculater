@@ -21,6 +21,8 @@ using std::set;
 
 // Basic conversions
 
+class Polynomial;
+
 using real_type = long double;
 using polynomial_type = Polynomial;
 
@@ -39,10 +41,11 @@ enum STATUSES : type {
 	SPECIAL_SYMBOL = 6,
 	ERROR = 7,
 	OPERATOR = 8,
-	POLYNOMIAL = 9
+	POLYNOMIAL = 9,
+	INTEGER = 10
 };
 
-const int STATUSES_COUNT = 10;
+const int STATUSES_COUNT = 11;
 
 /* Special Symbols:
 	The right bracket ")" is a special characters, which performs the last function
