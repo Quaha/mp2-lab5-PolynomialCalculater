@@ -9,7 +9,7 @@ using function_type = std::function<Data(const std::vector<Data>&)>;
 
 class MemoryManager {
 public:
-    PrefixTree<Data> program_data; // [name of variable] = integer or real Data
+    PrefixTree<Data> program_data; // [name of variable] = real or polynomial Data
     PrefixTree<shared_ptr<function_type>> function_data; // [name of function] = function object
     PrefixTree<int> objects_priority; // [name of object] = function priority
 };

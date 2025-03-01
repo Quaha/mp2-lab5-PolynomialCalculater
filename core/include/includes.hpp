@@ -11,6 +11,9 @@
 #include <sstream>
 #include <iomanip>
 
+#include "Monom.hpp"
+#include "Polynomial.hpp"
+
 using std::vector;
 using std::string;
 using std::map;
@@ -18,36 +21,8 @@ using std::set;
 
 // Basic conversions
 
-using integer_type = long long;
 using real_type = long double;
-
-inline real_type _itor(integer_type value) { // integer to real
-	return static_cast<real_type>(value);
-}
-
-inline integer_type _rtoi(real_type value) { // real to integer
-	return static_cast<integer_type>(value);
-}
-
-inline integer_type _stoi(const std::string value) { // string to integer
-	return static_cast<integer_type>(stoll(value));
-}
-
-inline real_type _stor(const std::string value) { // string to real
-	return static_cast<real_type>(stold(value));
-}
-
-inline std::string _itos(integer_type value) { // integer to string
-	std::ostringstream oss;
-	oss << value;
-	return oss.str();
-}
-
-inline std::string _rtos(real_type value) { // real to string
-	std::ostringstream oss;
-	oss << value;
-	return oss.str();
-}
+using polynomial_type = Polynomial;
 
 using std::unique_ptr;
 using std::shared_ptr;
@@ -56,15 +31,15 @@ using type = int;
 
 enum STATUSES : type {
 	NONE = 0,
-	INTEGER = 1,
-	REAL = 2,
-	VARIABLE = 3,
-	INTEGER_VARIABLE = 4,
-	REAL_VARIABLE = 5,
-	FUNCTION = 6,
-	SPECIAL_SYMBOL = 7,
-	ERROR = 8,
-	OPERATOR = 9
+	REAL = 1,
+	VARIABLE = 2,
+	POLYNOMIAL_VARIABLE = 3,
+	REAL_VARIABLE = 4,
+	FUNCTION = 5,
+	SPECIAL_SYMBOL = 6,
+	ERROR = 7,
+	OPERATOR = 8,
+	POLYNOMIAL = 9
 };
 
 const int STATUSES_COUNT = 10;

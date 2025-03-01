@@ -204,6 +204,10 @@ double Polynomial::calculate(double x, double y, double z) const {
 	return result;
 }
 
+List<Monom> Polynomial::getMonoms() const {
+	return polynomial;
+}
+
 Polynomial operator*(double c, const Polynomial& pol) {
 	return pol * c;
 }

@@ -11,10 +11,6 @@ struct Data {
 
     type getType() const;
     string getData() const;
-    void makeInteger();
-    void makeReal();
 };
 
 Data convertToValue(Data data);
-Data convertToInteger(Data data);
-Data convertToReal(Data data);
