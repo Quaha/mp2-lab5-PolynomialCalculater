@@ -33,6 +33,8 @@ void processTypesOfSymbols(Interpreter::LexicalAnalyzer& analyzer) {
 
 	analyzer.allowed_symbols.insert('.');
 
+	analyzer.allowed_symbols.insert('^');
+
 	// Degits symbols
 	for (char C = '0'; C <= '9'; ++C) {
 		analyzer.digits_symbols.insert(C);
@@ -62,86 +64,170 @@ void processTypesOfSymbols(Interpreter::LexicalAnalyzer& analyzer) {
 void buildLexicalAnalyzerAutomat(Interpreter::LexicalAnalyzer& analyzer) {
 	//Automat states
 
-	analyzer.tokens_aut.setStateStatus(0, NONE); // start state
+	analyzer.tokens_aut.setStateStatus(0, NONE);
 
-	analyzer.tokens_aut.setStateStatus(1, INTEGER); // zero integer
+	analyzer.tokens_aut.setStateStatus(10, OPERATOR);
 
-	analyzer.tokens_aut.setStateStatus(2, INTEGER); // other integer
+	analyzer.tokens_aut.setStateStatus(20, VARIABLE);
+	analyzer.tokens_aut.setStateStatus(21, VARIABLE);
 
-	analyzer.tokens_aut.setStateStatus(4, NONE); // after number point
-	analyzer.tokens_aut.setStateStatus(5, REAL); // real number point
+	analyzer.tokens_aut.setStateStatus(30, FUNCTION);
 
-	analyzer.tokens_aut.setStateStatus(10, VARIABLE); // variable
-	analyzer.tokens_aut.setStateStatus(11, FUNCTION); // function
-	analyzer.tokens_aut.setStateStatus(12, SPECIAL_SYMBOL); // special_symbol
+	analyzer.tokens_aut.setStateStatus(40, REAL);
+	analyzer.tokens_aut.setStateStatus(41, REAL);
+	analyzer.tokens_aut.setStateStatus(42, NONE);
+	analyzer.tokens_aut.setStateStatus(43, REAL);
 
-	analyzer.tokens_aut.setStateStatus(15, OPERATOR); // operator
+	analyzer.tokens_aut.setStateStatus(50, NONE);
+	analyzer.tokens_aut.setStateStatus(51, NONE);
+	analyzer.tokens_aut.setStateStatus(52, NONE);
+	analyzer.tokens_aut.setStateStatus(53, NONE);
+	analyzer.tokens_aut.setStateStatus(54, NONE);
+	analyzer.tokens_aut.setStateStatus(55, NONE);
+	analyzer.tokens_aut.setStateStatus(56, NONE);
+	analyzer.tokens_aut.setStateStatus(57, NONE);
+	analyzer.tokens_aut.setStateStatus(58, NONE);
+	analyzer.tokens_aut.setStateStatus(59, POLYNOMIAL);
+	analyzer.tokens_aut.setStateStatus(60, POLYNOMIAL);
 
-	analyzer.tokens_aut.setStateStatus(99, ERROR); // global error
+	analyzer.tokens_aut.setStateStatus(70, SPECIAL_SYMBOL);
 
+	analyzer.tokens_aut.setStateStatus(99, ERROR);
 
-	// Start state
-	analyzer.tokens_aut.addTransition(0, 1, '0');
-	for (char C = '1'; C <= '9'; ++C) {
-		analyzer.tokens_aut.addTransition(0, 2, C);
-	}
-	for (char C : analyzer.names_symbols) {
-		analyzer.tokens_aut.addTransition(0, 10, C);
-	}
-	analyzer.tokens_aut.addTransition(0, 11, '(');
-	analyzer.tokens_aut.addTransition(0, 12, ')');
-	analyzer.tokens_aut.addTransition(0, 12, ';');
-	analyzer.tokens_aut.addTransition(0, 12, ',');
-
-	for (char C : analyzer.operators_symbols) {
-		analyzer.tokens_aut.addTransition(0, 15, C);
-	}
-
-	// Zero integer
-	analyzer.tokens_aut.addTransition(1, 4, '.');
-
-
-	// Other integer
-	for (char C : analyzer.allowed_symbols) {
-		if (analyzer.digits_symbols.count(C)) {
-			analyzer.tokens_aut.addTransition(2, 2, C);
+	{ // 0
+		analyzer.tokens_aut.addTransition(0, 41, '0');
+		for (char C = '1'; C <= '9'; C++) {
+			analyzer.tokens_aut.addTransition(0, 40, C);
 		}
-	}
-	analyzer.tokens_aut.addTransition(2, 4, '.');
+		analyzer.tokens_aut.addTransition(0, 30, '(');
 
+		analyzer.tokens_aut.addTransition(0, 70, ',');
+		analyzer.tokens_aut.addTransition(0, 70, ')');
 
-	// after point
-	for (char C : analyzer.digits_symbols) {
-		analyzer.tokens_aut.addTransition(4, 5, C);
-	}
-
-	// real
-	for (char C : analyzer.digits_symbols) {
-		analyzer.tokens_aut.addTransition(5, 5, C);
-	}
-
-	// Variable
-	for (char C : analyzer.allowed_symbols) {
-		if (analyzer.names_symbols.find(C) != analyzer.names_symbols.end()) {
-			analyzer.tokens_aut.addTransition(10, 10, C);
+		for (char C: analyzer.names_symbols) {
+			if (C != 'x') {
+				analyzer.tokens_aut.addTransition(0, 20, C);
+			}
 		}
-		else if (C == '(') {
-			analyzer.tokens_aut.addTransition(10, 11, C);
+		analyzer.tokens_aut.addTransition(0, 21, 'x');
+
+		for (char C : analyzer.operators_symbols) {
+			analyzer.tokens_aut.addTransition(0, 10, C);
 		}
 	}
 
+	{ // 10
 
-	// Function
-	//empty
+	}
 
-	// Special_symbol
-	//empty
+	{ // 20
+		for (char C : analyzer.names_symbols) {
+			analyzer.tokens_aut.addTransition(20, 20, C);
+		}
+		for (char C : analyzer.digits_symbols) {
+			analyzer.tokens_aut.addTransition(20, 20, C);
+		}
+		analyzer.tokens_aut.addTransition(20, 30, '(');
+	}
 
-	// Operator
-	//empty
+	{ // 21
+		for (char C : analyzer.names_symbols) {
+			analyzer.tokens_aut.addTransition(21, 20, C);
+		}
+		for (char C : analyzer.digits_symbols) {
+			analyzer.tokens_aut.addTransition(21, 20, C);
+		}
+		analyzer.tokens_aut.addTransition(21, 30, '(');
+		analyzer.tokens_aut.addTransition(21, 50, '^');
+	}
 
-	// Global error
-	//empty
+	{ // 30
+
+	}
+
+	{ // 40
+		for (char C : analyzer.digits_symbols) {
+			analyzer.tokens_aut.addTransition(40, 40, C);
+		}
+		analyzer.tokens_aut.addTransition(40, 42, '.');
+	}
+
+	{ // 41
+		analyzer.tokens_aut.addTransition(41, 42, '.');
+	}
+
+	{ // 42
+		for (char C : analyzer.digits_symbols) {
+			analyzer.tokens_aut.addTransition(42, 43, C);
+		}
+	}
+
+	{ // 43
+		for (char C : analyzer.digits_symbols) {
+			analyzer.tokens_aut.addTransition(43, 43, C);
+		}
+	}
+
+	{ // 50
+		for (char C = '1'; C <= '9'; C++) {
+			analyzer.tokens_aut.addTransition(50, 52, C);
+		}
+		analyzer.tokens_aut.addTransition(50, 51, '0');
+	}
+
+	{ // 51
+		analyzer.tokens_aut.addTransition(51, 53, 'y');
+	}
+
+	{ // 52
+		analyzer.tokens_aut.addTransition(52, 53, 'y');
+		for (char C : analyzer.digits_symbols) {
+			analyzer.tokens_aut.addTransition(52, 52, C);
+		}
+	}
+
+	{ // 53
+		analyzer.tokens_aut.addTransition(53, 54, '^');
+	}
+
+	{ // 54
+		for (char C = '1'; C <= '9'; C++) {
+			analyzer.tokens_aut.addTransition(54, 56, C);
+		}
+		analyzer.tokens_aut.addTransition(54, 55, '0');
+	}
+
+	{ // 55
+		analyzer.tokens_aut.addTransition(55, 57, 'z');
+	}
+
+	{ // 56
+		analyzer.tokens_aut.addTransition(56, 57, 'z');
+		for (char C : analyzer.digits_symbols) {
+			analyzer.tokens_aut.addTransition(56, 56, C);
+		}
+	}
+
+	{ // 57
+		analyzer.tokens_aut.addTransition(57, 58, '^');
+	}
+
+	{ // 58
+		analyzer.tokens_aut.addTransition(58, 59, '0');
+		for (char C = '1'; C <= '9'; C++) {
+			analyzer.tokens_aut.addTransition(58, 60, C);
+		}
+	}
+
+	{ // 59
+
+	}
+
+	{ // 60
+		for (char C = '0'; C <= '9'; C++) {
+			analyzer.tokens_aut.addTransition(60, 60, C);
+		}
+	}
 
 
 	// General errors transitions
@@ -194,7 +280,7 @@ vector<Data> Interpreter::LexicalAnalyzer::divideIntoTokens(const string& line) 
 			if (curr_status == NONE) {
 				throw std::runtime_error("ERROR: a lexical error!");
 			}
-			else if (curr_status == INTEGER ||
+			else if (curr_status == POLYNOMIAL ||
 					 curr_status == REAL ||
 					 curr_status == SPECIAL_SYMBOL ||
 					 curr_status == OPERATOR){
@@ -203,13 +289,13 @@ vector<Data> Interpreter::LexicalAnalyzer::divideIntoTokens(const string& line) 
 			}
 			else if (curr_status == VARIABLE) {
 				
-				if (!global_memory->program_data.exists(stack)) {
+				if (!global_memory->program_data.isExist(stack)) {
 					tokens.push_back(Data(VARIABLE, stack));
 				}
 				else {
 					type variable_type = global_memory->program_data.getData(stack).getType();
-					if (variable_type == INTEGER) {
-						tokens.push_back(Data(INTEGER_VARIABLE, stack));
+					if (variable_type == POLYNOMIAL) {
+						tokens.push_back(Data(POLYNOMIAL_VARIABLE, stack));
 					}
 					else if (variable_type == REAL) {
 						tokens.push_back(Data(REAL_VARIABLE, stack));
@@ -220,7 +306,7 @@ vector<Data> Interpreter::LexicalAnalyzer::divideIntoTokens(const string& line) 
 				}
 			}
 			else if (curr_status == FUNCTION) {
-				if (!global_memory->function_data.exists(stack)) {
+				if (!global_memory->function_data.isExist(stack)) {
 					throw std::runtime_error("ERROR: a nonexistent function was found!");
 				}
 				else {
@@ -255,7 +341,7 @@ Interpreter::SerialAnalyzer::SerialAnalyzer() {
 		allowed[i].resize(STATUSES_COUNT, true);
 	}
 
-	vector<type> values_statuses = { INTEGER, REAL, INTEGER_VARIABLE, REAL_VARIABLE, VARIABLE };
+	vector<type> values_statuses = { POLYNOMIAL, REAL, POLYNOMIAL_VARIABLE, REAL_VARIABLE, VARIABLE };
 	for (int i = 0; i < values_statuses.size(); i++) {
 		for (int j = 0; j < values_statuses.size(); j++) {
 			allowed[i][j] = false;
@@ -281,6 +367,7 @@ void Interpreter::SerialAnalyzer::checkTokens(const vector<Data>& tokens) const 
 void processFunctionData() {
 	global_memory->function_data.setWord("(", std::make_shared<function_type>(__LEFT__BRACKET__OPERATOR__));
 	global_memory->function_data.setWord("sum(", std::make_shared<function_type>(sum));
+	global_memory->function_data.setWord("calcValue(", std::make_shared<function_type>(calcValue));
 	global_memory->function_data.setWord("+", std::make_shared<function_type>(__PLUS__OPERATOR__));
 	global_memory->function_data.setWord("-", std::make_shared<function_type>(__MINUS__OPERATOR__));
 	global_memory->function_data.setWord("*", std::make_shared<function_type>(__MULTIPLY__OPERATOR__));
@@ -289,6 +376,7 @@ void processFunctionData() {
 
 	global_memory->objects_priority.setWord("(", 0);
 	global_memory->objects_priority.setWord("sum(", 0);
+	global_memory->objects_priority.setWord("calcValue(", 0);
 	global_memory->objects_priority.setWord("+", 100);
 	global_memory->objects_priority.setWord("-", 100);
 	global_memory->objects_priority.setWord("*", 200);
@@ -359,14 +447,10 @@ Data Interpreter::execute(const string& line) {
 
 		Data curr_token = tokens[i];
 
-		if (curr_token.data == ")") {
-			int b = 4;
-		}
-
-		if (curr_token.getType() == INTEGER ||
+		if (curr_token.getType() == POLYNOMIAL ||
 			curr_token.getType() == REAL ||
 			curr_token.getType() == VARIABLE ||
-			curr_token.getType() == INTEGER_VARIABLE ||
+			curr_token.getType() == POLYNOMIAL_VARIABLE ||
 			curr_token.getType() == REAL_VARIABLE) {
 			values.push_back(curr_token);
 

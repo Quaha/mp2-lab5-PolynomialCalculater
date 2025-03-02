@@ -5,7 +5,7 @@
 #include "PrefixTree.hpp"
 
 TEST(PrefixTree, addAndGetData) {
-    PrefixTree<string, string, char> tree;
+    PrefixTree<string> tree;
 
     tree.setWord("apple", "A fruit");
     tree.setWord("banana", "Another fruit");
@@ -15,16 +15,16 @@ TEST(PrefixTree, addAndGetData) {
 }
 
 TEST(PrefixTree, wordExists) {
-    PrefixTree<string, string, char> tree;
+    PrefixTree<string> tree;
 
     tree.setWord("apple", "A fruit");
 
-    EXPECT_TRUE(tree.exists("apple"));
-    EXPECT_FALSE(tree.exists("banana"));
+    EXPECT_TRUE(tree.isExist("apple"));
+    EXPECT_FALSE(tree.isExist("banana"));
 }
 
 TEST(PrefixTree, nonExistentWordThrowsException) {
-    PrefixTree<string, string, char> tree;
+    PrefixTree<string> tree;
 
     tree.setWord("apple", "A fruit");
 
@@ -32,14 +32,14 @@ TEST(PrefixTree, nonExistentWordThrowsException) {
 }
 
 TEST(PrefixTree, emptyWord) {
-    PrefixTree<string, string, char> tree;
+    PrefixTree<string> tree;
     tree.setWord("", "An empty word");
 
     EXPECT_EQ(tree.getData(""), "An empty word");
 }
 
 TEST(PrefixTree, setWordsAndCheckOrder) {
-    PrefixTree<int, string, char> tree;
+    PrefixTree<int> tree;
 
     tree.setWord("apple", 1);
     tree.setWord("banana", 2);
@@ -49,14 +49,14 @@ TEST(PrefixTree, setWordsAndCheckOrder) {
 }
 
 TEST(PrefixTree, LongChainOfWords) {
-    PrefixTree<string, string, char> tree;
+    PrefixTree<string> tree;
     tree.setWord("thisisaverylongword", "A very long word");
 
     EXPECT_EQ(tree.getData("thisisaverylongword"), "A very long word");
 }
 
 TEST(PrefixTree, handleMultipleWordsWithCommonPrefix) {
-    PrefixTree<string, string, char> tree;
+    PrefixTree<string> tree;
     tree.setWord("apple", "A fruit");
     tree.setWord("apricot", "Another fruit");
 
@@ -65,7 +65,7 @@ TEST(PrefixTree, handleMultipleWordsWithCommonPrefix) {
 }
 
 TEST(PrefixTree, handleNestedWords) {
-    PrefixTree<string, string, char> tree;
+    PrefixTree<string> tree;
     tree.setWord("hello", "A greeting");
     tree.setWord("hell", "A word meaning underworld");
 

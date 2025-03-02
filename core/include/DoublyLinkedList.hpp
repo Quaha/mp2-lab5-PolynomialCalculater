@@ -25,7 +25,7 @@ private:
 
 public:
     class Iterator {
-        friend class List;
+        friend class List<ListType>;
     private:
         Node* curr_node = nullptr;
 
@@ -180,7 +180,7 @@ public:
         destruct();
     }
 
-    List& operator=(const List& other) {
+    List<ListType>& operator=(const List<ListType>& other) {
         if (this != &other) {
             destruct();
             roughCoping(other);
@@ -188,7 +188,7 @@ public:
         return *this;
     }
 
-    List& operator=(List&& other) {
+    List<ListType>& operator=(List<ListType>&& other) {
         if (this != &other) {
             this->head = other.head;
             this->sz = other.sz;

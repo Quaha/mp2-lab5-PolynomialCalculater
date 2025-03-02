@@ -53,6 +53,8 @@ public:
 	Polynomial& operator/=(double);
 
 	double calculate(double x, double y, double z) const;
+
+	List<Monom> getMonoms() const;
 };
 
 Polynomial operator*(double, const Polynomial&);

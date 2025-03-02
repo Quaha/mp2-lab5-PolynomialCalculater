@@ -1,6 +1,8 @@
 #include "Polynomial.hpp"
 #include "Monom.hpp"
 
+//#include "DoublyLinkedList.hpp"
+
 #include <cmath>
 
 void Polynomial::rebalance() {
@@ -202,6 +204,10 @@ double Polynomial::calculate(double x, double y, double z) const {
 		result += mon.calculate(x, y, z);
 	}
 	return result;
+}
+
+List<Monom> Polynomial::getMonoms() const {
+	return polynomial;
 }
 
 Polynomial operator*(double c, const Polynomial& pol) {
