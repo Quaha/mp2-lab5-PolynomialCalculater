@@ -3,27 +3,30 @@
 #include "includes.hpp"
 #include "Automat.hpp"
 
+#include "Monom.hpp"
+#include "Polynomial.hpp"
+
 inline real_type _stor(const std::string value) { // string to real
 	return static_cast<real_type>(stold(value));
 }
 
 inline Monom _stom(const std::string value) { // string to Monom
-	int x_pos = -1;
-	int y_pos = -1;
-	int z_pos = -1;
+	int x_pos = 0;
+	int y_pos = 0;
+	int z_pos = 0;
 
-	while (x_pos != 'x' && x_pos < value.size()) {
+	while (value[x_pos] != 'x' && x_pos < value.size()) {
 		x_pos++;
 	}
-	while (y_pos != 'y' && y_pos < value.size()) {
+	while (value[y_pos] != 'y' && y_pos < value.size()) {
 		y_pos++;
 	}
-	while (z_pos != 'z' && z_pos < value.size()) {
+	while (value[z_pos] != 'z' && z_pos < value.size()) {
 		z_pos++;
 	}
 
 	real_type coef = 1;
-	if (x_pos != 1) {
+	if (x_pos > 1) {
 		coef = _stor(value.substr(0, x_pos - 1));
 	}
 
@@ -34,24 +37,24 @@ inline Monom _stom(const std::string value) { // string to Monom
 	return Monom(coef, x_deg, y_deg, z_deg);
 }
 
-inline polynomial_type _stop(const std::string value) { // string to Polynom
+inline Polynomial _stop(const std::string value) { // string to Polynom
 
 	string temp = "";
 	temp.push_back(value[0]);
 
-	polynomial_type result;
+	Polynomial result;
 	for (int i = 1; i < value.size(); i++) {
 		if (value[i] == '+' || value[i] == '-') {
 			result += _stom(temp);
 			temp.clear();
-			temp.push_back(value[i]);
 		}
+		temp.push_back(value[i]);
 	}
 	result += _stom(temp);
 	return result;
 }
 
-inline polynomial_type _rtop(const real_type value) { // real to Polynom
+inline Polynomial _rtop(const real_type value) { // real to Polynom
 	return Polynomial(Monom(value, 0, 0, 0));
 }
 
@@ -61,10 +64,19 @@ inline std::string _rtos(real_type value) { // real to string
 	return oss.str();
 }
 
-inline std::string _ptos(polynomial_type value) { // Polynomial to string
+inline std::string _ptos(Polynomial value) { // Polynomial to string
 	std::ostringstream oss;
-	for (auto Monom : value.getMonoms()) {
-		oss << Monom.getCoefficient() << "*" << Monom.getXDegree() << Monom.getYDegree() << Monom.getZDegree();
+	bool flag = true;
+	for (const auto &Monom : value.getMonoms()) {
+		if (!flag && Monom.getCoefficient() > FLT_EPSILON) {
+			oss << "+" << Monom.getCoefficient() << "*" << "x^" << Monom.getXDegree() << "y^" << Monom.getYDegree() << "z^" << Monom.getZDegree();
+		}
+		else {
+			if (std::abs(Monom.getCoefficient()) >= FLT_EPSILON || value.getMonoms().size() == 1) {
+				oss << Monom.getCoefficient() << "*" << "x^" << Monom.getXDegree() << "y^" << Monom.getYDegree() << "z^" << Monom.getZDegree();
+			}
+		}
+		flag = false;
 	}
 	return oss.str();
 }

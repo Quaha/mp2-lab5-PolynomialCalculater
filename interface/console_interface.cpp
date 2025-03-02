@@ -12,7 +12,7 @@ int main() {
 			getline(std::cin, line);
 
 			Data result = program.execute(line);
-			if (result.data_type == INTEGER || result.data_type == REAL) {
+			if (result.data_type == POLYNOMIAL || result.data_type == REAL) {
 				std::cout << ">> " << result.data << std::endl;
 			}
 			else if (result.data_type != NONE) {

@@ -1,7 +1,7 @@
 #include "Polynomial.hpp"
 #include "Monom.hpp"
 
-#include "DoublyLinkedList.hpp"
+//#include "DoublyLinkedList.hpp"
 
 #include <cmath>
 

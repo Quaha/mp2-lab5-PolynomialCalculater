@@ -57,7 +57,7 @@ Data __PLUS__OPERATOR__(const vector<Data>& parameters) {
     }
     if (values[0].getType() == REAL && values[1].getType() == POLYNOMIAL) {
         result.data_type = POLYNOMIAL;
-        result.data = _ptos(Polynomial(Monom(_stor(values[1].getData()), 0, 0, 0)) + _stop(values[0].getData()));
+        result.data = _ptos(Polynomial(Monom(_stor(values[0].getData()), 0, 0, 0)) + _stop(values[1].getData()));
         return result;
     }
 
@@ -94,7 +94,7 @@ Data __MINUS__OPERATOR__(const vector<Data>& parameters) {
     }
     if (values[0].getType() == REAL && values[1].getType() == POLYNOMIAL) {
         result.data_type = POLYNOMIAL;
-        result.data = _ptos(Polynomial(Monom(_stor(values[1].getData()), 0, 0, 0)) - _stop(values[0].getData()));
+        result.data = _ptos(Polynomial(Monom(_stor(values[0].getData()), 0, 0, 0)) - _stop(values[1].getData()));
         return result;
     }
 
@@ -131,7 +131,7 @@ Data __MULTIPLY__OPERATOR__(const vector<Data>& parameters) {
     }
     if (values[0].getType() == REAL && values[1].getType() == POLYNOMIAL) {
         result.data_type = POLYNOMIAL;
-        result.data = _ptos(Polynomial(Monom(_stor(values[1].getData()), 0, 0, 0)) * _stop(values[0].getData()));
+        result.data = _ptos(Polynomial(Monom(_stor(values[0].getData()), 0, 0, 0)) * _stop(values[1].getData()));
         return result;
     }
 
@@ -195,6 +195,25 @@ Data sum(const vector<Data>& parameters) {
 
     vector<Data> values = getValues(parameters);
 
+    bool isPoly = false;
+    for (int i = 0; i < values.size(); i++) {
+        if (values[i].getType() == POLYNOMIAL) {
+            isPoly = true;
+        }
+    }
+
+    if (!isPoly) {
+        real_type temp = 0;
+        for (int i = 0; i < values.size(); i++) {
+            temp += _stor(values[i].getData());
+        }
+
+        Data result;
+        result.data_type = REAL;
+        result.data = _rtos(temp);
+        return result;
+    }
+
     Data result;
     if (values[0].getType() == REAL) {
         result.data = _ptos(_rtop(_stor(values[0].getData())));
@@ -213,5 +232,34 @@ Data sum(const vector<Data>& parameters) {
         }
     }
 
+    return result;
+}
+
+Data calcValue(const vector<Data>& parameters) {
+
+    if (parameters.size() == 0) {
+        throw std::invalid_argument("ERROR: invalid number of arguments!");
+    }
+
+    vector<Data> values = getValues(parameters);
+
+    if (values[1].getType() != REAL || values[2].getType() != REAL || values[3].getType() != REAL) {
+        throw std::invalid_argument("ERROR: invalid type of arguments!");
+    }
+
+    if (values[0].getType() == REAL) {
+        return values[0];
+    }
+
+    Polynomial p = _stop(values[0].getData());
+    int xd = _stor(values[1].getData());
+    int yd = _stor(values[1].getData());
+    int zd = _stor(values[1].getData());
+
+    real_type res = p.calculate(xd, yd, zd);
+
+    Data result;
+    result.data_type = REAL;
+    result.data = _rtos(res);
     return result;
 }

@@ -75,20 +75,22 @@ void buildLexicalAnalyzerAutomat(Interpreter::LexicalAnalyzer& analyzer) {
 
 	analyzer.tokens_aut.setStateStatus(40, REAL);
 	analyzer.tokens_aut.setStateStatus(41, REAL);
-	analyzer.tokens_aut.setStateStatus(42, ERROR);
+	analyzer.tokens_aut.setStateStatus(42, NONE);
 	analyzer.tokens_aut.setStateStatus(43, REAL);
 
-	analyzer.tokens_aut.setStateStatus(50, ERROR);
-	analyzer.tokens_aut.setStateStatus(51, ERROR);
-	analyzer.tokens_aut.setStateStatus(52, ERROR);
-	analyzer.tokens_aut.setStateStatus(53, ERROR);
-	analyzer.tokens_aut.setStateStatus(54, ERROR);
-	analyzer.tokens_aut.setStateStatus(55, ERROR);
-	analyzer.tokens_aut.setStateStatus(56, ERROR);
-	analyzer.tokens_aut.setStateStatus(57, ERROR);
-	analyzer.tokens_aut.setStateStatus(58, ERROR);
+	analyzer.tokens_aut.setStateStatus(50, NONE);
+	analyzer.tokens_aut.setStateStatus(51, NONE);
+	analyzer.tokens_aut.setStateStatus(52, NONE);
+	analyzer.tokens_aut.setStateStatus(53, NONE);
+	analyzer.tokens_aut.setStateStatus(54, NONE);
+	analyzer.tokens_aut.setStateStatus(55, NONE);
+	analyzer.tokens_aut.setStateStatus(56, NONE);
+	analyzer.tokens_aut.setStateStatus(57, NONE);
+	analyzer.tokens_aut.setStateStatus(58, NONE);
 	analyzer.tokens_aut.setStateStatus(59, POLYNOMIAL);
 	analyzer.tokens_aut.setStateStatus(60, POLYNOMIAL);
+
+	analyzer.tokens_aut.setStateStatus(70, SPECIAL_SYMBOL);
 
 	analyzer.tokens_aut.setStateStatus(99, ERROR);
 
@@ -98,8 +100,9 @@ void buildLexicalAnalyzerAutomat(Interpreter::LexicalAnalyzer& analyzer) {
 			analyzer.tokens_aut.addTransition(0, 40, C);
 		}
 		analyzer.tokens_aut.addTransition(0, 30, '(');
-		analyzer.tokens_aut.addTransition(0, 30, ',');
-		analyzer.tokens_aut.addTransition(0, 30, ')');
+
+		analyzer.tokens_aut.addTransition(0, 70, ',');
+		analyzer.tokens_aut.addTransition(0, 70, ')');
 
 		for (char C: analyzer.names_symbols) {
 			if (C != 'x') {
@@ -107,6 +110,10 @@ void buildLexicalAnalyzerAutomat(Interpreter::LexicalAnalyzer& analyzer) {
 			}
 		}
 		analyzer.tokens_aut.addTransition(0, 21, 'x');
+
+		for (char C : analyzer.operators_symbols) {
+			analyzer.tokens_aut.addTransition(0, 10, C);
+		}
 	}
 
 	{ // 10
@@ -195,7 +202,7 @@ void buildLexicalAnalyzerAutomat(Interpreter::LexicalAnalyzer& analyzer) {
 	}
 
 	{ // 56
-		analyzer.tokens_aut.addTransition(56, 57, 'y');
+		analyzer.tokens_aut.addTransition(56, 57, 'z');
 		for (char C : analyzer.digits_symbols) {
 			analyzer.tokens_aut.addTransition(56, 56, C);
 		}
@@ -360,6 +367,7 @@ void Interpreter::SerialAnalyzer::checkTokens(const vector<Data>& tokens) const 
 void processFunctionData() {
 	global_memory->function_data.setWord("(", std::make_shared<function_type>(__LEFT__BRACKET__OPERATOR__));
 	global_memory->function_data.setWord("sum(", std::make_shared<function_type>(sum));
+	global_memory->function_data.setWord("calcValue(", std::make_shared<function_type>(calcValue));
 	global_memory->function_data.setWord("+", std::make_shared<function_type>(__PLUS__OPERATOR__));
 	global_memory->function_data.setWord("-", std::make_shared<function_type>(__MINUS__OPERATOR__));
 	global_memory->function_data.setWord("*", std::make_shared<function_type>(__MULTIPLY__OPERATOR__));
@@ -368,6 +376,7 @@ void processFunctionData() {
 
 	global_memory->objects_priority.setWord("(", 0);
 	global_memory->objects_priority.setWord("sum(", 0);
+	global_memory->objects_priority.setWord("calcValue(", 0);
 	global_memory->objects_priority.setWord("+", 100);
 	global_memory->objects_priority.setWord("-", 100);
 	global_memory->objects_priority.setWord("*", 200);
@@ -437,10 +446,6 @@ Data Interpreter::execute(const string& line) {
 	for (int i = 0; i < tokens.size(); i++) {
 
 		Data curr_token = tokens[i];
-
-		if (curr_token.data == ")") {
-			int b = 4;
-		}
 
 		if (curr_token.getType() == POLYNOMIAL ||
 			curr_token.getType() == REAL ||

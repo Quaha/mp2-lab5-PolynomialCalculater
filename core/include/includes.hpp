@@ -11,8 +11,6 @@
 #include <sstream>
 #include <iomanip>
 
-#include "Monom.hpp"
-#include "Polynomial.hpp"
 
 using std::vector;
 using std::string;
@@ -24,7 +22,6 @@ using std::set;
 class Polynomial;
 
 using real_type = long double;
-using polynomial_type = Polynomial;
 
 using std::unique_ptr;
 using std::shared_ptr;
