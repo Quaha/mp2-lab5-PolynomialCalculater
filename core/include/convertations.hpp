@@ -60,7 +60,7 @@ inline Polynomial _rtop(const real_type value) { // real to Polynom
 
 inline std::string _rtos(real_type value) { // real to string
 	std::ostringstream oss;
-	oss << value;
+	oss << std::fixed << value;
 	return oss.str();
 }
 

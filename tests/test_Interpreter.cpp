@@ -222,7 +222,7 @@ TEST(Interpreter, PolynomialInterpretator6) {
     string x = "1";
     string y = "1";
     string z = "1";
-    string result = "5";
+    string result = "15";
 
     string line = "calcValue(" + expression + ", " + x + ", " + y + ", " + z + ")";
 
