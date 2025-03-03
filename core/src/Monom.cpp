@@ -3,7 +3,7 @@
 #include <iostream>
 #include <cmath>
 
-Monom::Monom(double c, unsigned int x, unsigned int y, unsigned int z) {
+Monom::Monom(long double c, unsigned int x, unsigned int y, unsigned int z) {
 	coefficient = c;
 	x_degree = x;
 	y_degree = y;
@@ -15,7 +15,7 @@ Monom Monom::operator+(const Monom& other) const {
 		throw std::runtime_error("It is not allowed to add monomials with different degrees!");
 	}
 
-	double new_c = this->coefficient + other.coefficient;
+	long double new_c = this->coefficient + other.coefficient;
 	unsigned int new_x = this->x_degree;
 	unsigned int new_y = this->y_degree;
 	unsigned int new_z = this->z_degree;
@@ -41,7 +41,7 @@ Monom Monom::operator-(const Monom& other) const {
 		throw std::runtime_error("It is not allowed to add monomials with different degrees!");
 	}
 
-	double new_c = this->coefficient - other.coefficient;
+	long double new_c = this->coefficient - other.coefficient;
 	unsigned int new_x = this->x_degree;
 	unsigned int new_y = this->y_degree;
 	unsigned int new_z = this->z_degree;
@@ -65,7 +65,7 @@ Monom Monom::operator-() const {
 }
 
 Monom Monom::operator*(const Monom& other) const {
-	double new_c = this->coefficient * other.coefficient;
+	long double new_c = this->coefficient * other.coefficient;
 	unsigned int new_x = this->x_degree + other.x_degree;
 	unsigned int new_y = this->y_degree + other.y_degree;
 	unsigned int new_z = this->z_degree + +other.z_degree;
@@ -108,20 +108,20 @@ Monom& Monom::operator/=(const Monom& other) {
 	return *this;
 }
 
-Monom Monom::operator*(double c) const {
+Monom Monom::operator*(long double c) const {
 	Monom result = *this;
 	result.coefficient *= c;
 
 	return result;
 }
 
-Monom& Monom::operator*=(double c) {
+Monom& Monom::operator*=(long double c) {
 	this->coefficient *= c;
 
 	return *this;
 }
 
-Monom operator*(double c, const Monom& mon) {
+Monom operator*(long double c, const Monom& mon) {
 	return mon * c;
 }
 
@@ -181,7 +181,7 @@ bool Monom::canBeDivided(const Monom& other) const {
 	return std::abs(other.coefficient) > EPS && this->x_degree >= other.x_degree && this->y_degree >= other.y_degree && this->z_degree >= other.z_degree;
 }
 
-double Monom::getCoefficient() const {
+long double Monom::getCoefficient() const {
 	return this->coefficient;
 }
 
@@ -197,7 +197,7 @@ unsigned int Monom::getZDegree() const {
 	return this->z_degree;
 }
 
-void Monom::setCoefficient(double c) {
+void Monom::setCoefficient(long double c) {
 	this->coefficient = c;
 }
 
@@ -213,10 +213,10 @@ void Monom::setZDegree(unsigned int z) {
 	this->z_degree = z;
 }
 
-double Monom::calculate(double x, double y, double z) const {
+long double Monom::calculate(long double x, long double y, long double z) const {
 	return coefficient * pow(x, x_degree) * pow(y, y_degree) * pow(z, z_degree);
 }
 
-double Monom::getEPS() {
+long double Monom::getEPS() {
 	return Monom::EPS;
 }

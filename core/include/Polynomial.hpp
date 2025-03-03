@@ -40,8 +40,8 @@ public:
 	Polynomial operator*(const Monom&) const;
 	Polynomial& operator*=(const Monom&);
 
-	Polynomial operator*(double) const;
-	Polynomial& operator*=(double);
+	Polynomial operator*(long double) const;
+	Polynomial& operator*=(long double);
 
 	Polynomial operator/(const Monom&) const;
 	Polynomial& operator/=(const Monom&);
@@ -49,13 +49,13 @@ public:
 	Polynomial operator%(const Monom&) const;
 	Polynomial& operator%=(const Monom&);
 
-	Polynomial operator/(double) const;
-	Polynomial& operator/=(double);
+	Polynomial operator/(long double) const;
+	Polynomial& operator/=(long double);
 
-	double calculate(double x, double y, double z) const;
+	long double calculate(long double x, long double y, long double z) const;
 
 	List<Monom> getMonoms() const;
 };
 
-Polynomial operator*(double, const Polynomial&);
+Polynomial operator*(long double, const Polynomial&);
 Polynomial operator*(const Monom&, const Polynomial&);

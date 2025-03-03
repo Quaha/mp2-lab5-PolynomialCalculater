@@ -59,24 +59,63 @@ inline Polynomial _rtop(const real_type value) { // real to Polynom
 }
 
 inline std::string _rtos(real_type value) { // real to string
-	std::ostringstream oss;
-	oss << std::fixed << value;
-	return oss.str();
+	string res = std::to_string(value);
+	int point_pos = 0;
+	while (point_pos < res.size() && res[point_pos] != '.') {
+		point_pos++;
+	}
+
+	if (point_pos < res.size()) {
+		while (res.back() == '0') {
+			res.pop_back();
+		}
+		if (res.back() == '.') {
+			res.pop_back();
+		}
+	}
+
+	return res;
 }
 
 inline std::string _ptos(Polynomial value) { // Polynomial to string
 	std::ostringstream oss;
 	bool flag = true;
 	for (const auto &Monom : value.getMonoms()) {
-		if (!flag && Monom.getCoefficient() > FLT_EPSILON) {
-			oss << "+" << Monom.getCoefficient() << "*" << "x^" << Monom.getXDegree() << "y^" << Monom.getYDegree() << "z^" << Monom.getZDegree();
+
+		string coef = std::to_string(Monom.getCoefficient());
+		int point_pos = 0;
+		while (point_pos < coef.size() && coef[point_pos] != '.') {
+			point_pos++;
 		}
-		else {
-			if (std::abs(Monom.getCoefficient()) >= FLT_EPSILON || value.getMonoms().size() == 1) {
-				oss << Monom.getCoefficient() << "*" << "x^" << Monom.getXDegree() << "y^" << Monom.getYDegree() << "z^" << Monom.getZDegree();
+
+		if (point_pos < coef.size()) {
+			while (coef.back() == '0') {
+				coef.pop_back();
+			}
+			if (coef.back() == '.') {
+				coef.pop_back();
 			}
 		}
-		flag = false;
+
+		if (flag) {
+			if (std::abs(Monom.getCoefficient()) >= FLT_EPSILON) {
+				oss << coef << "*" << "x^" << Monom.getXDegree() << "y^" << Monom.getYDegree() << "z^" << Monom.getZDegree();
+				flag = false;
+			}
+		}
+		else {
+			if (Monom.getCoefficient() > FLT_EPSILON) {
+				oss << "+" << coef << "*" << "x^" << Monom.getXDegree() << "y^" << Monom.getYDegree() << "z^" << Monom.getZDegree();
+			}
+			if (Monom.getCoefficient() < -FLT_EPSILON) {
+				oss << coef << "*" << "x^" << Monom.getXDegree() << "y^" << Monom.getYDegree() << "z^" << Monom.getZDegree();
+			}
+		}
 	}
+
+	if (flag) {
+		oss << "0*x^0y^0z^0";
+	}
+
 	return oss.str();
 }

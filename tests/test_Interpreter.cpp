@@ -297,7 +297,7 @@ TEST(Interpreter, PolynomialInterpretato11) {
     string x = "3";
     string y = "2";
     string z = "1";
-    string result = "4260";
+    string result = "4260.6";
 
     string line = "calcValue(" + expression + ", " + x + ", " + y + ", " + z + ")";
 
@@ -429,9 +429,9 @@ TEST(Interpreter, PolynomialInterpretator19) {
 
 TEST(Interpreter, PolynomialInterpretator20) {
     string expression = "(1.0/2+2)*3-1*(2-3*4)+x^5y^9z^7";
-    string x = "0";
-    string y = "0";
-    string z = "0";
+    string x = "1";
+    string y = "1";
+    string z = "1";
     string result = "18.5";
 
     string line = "calcValue(" + expression + ", " + x + ", " + y + ", " + z + ")";

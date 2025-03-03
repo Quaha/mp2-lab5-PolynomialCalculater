@@ -252,9 +252,9 @@ Data calcValue(const vector<Data>& parameters) {
     }
 
     Polynomial p = _stop(values[0].getData());
-    int xd = _stor(values[1].getData());
-    int yd = _stor(values[2].getData());
-    int zd = _stor(values[3].getData());
+    real_type xd = _stor(values[1].getData());
+    real_type yd = _stor(values[2].getData());
+    real_type zd = _stor(values[3].getData());
 
     real_type res = p.calculate(xd, yd, zd);
 

@@ -3,16 +3,16 @@
 class Monom {
 private:
 
-	double coefficient = 0;
+	long double coefficient = 0;
 	unsigned int x_degree = 0, y_degree = 0, z_degree = 0;
 
-	static inline const double EPS = 1e-7;
+	static inline const long double EPS = 1e-7;
 
 public:
 
 	Monom() = default;
 
-	Monom(double c, unsigned int x, unsigned int y, unsigned int z);
+	Monom(long double c, unsigned int x, unsigned int y, unsigned int z);
 
 	~Monom() = default;
 
@@ -38,8 +38,8 @@ public:
 	Monom operator/(const Monom&) const;
 	Monom& operator/=(const Monom&);
 
-	Monom operator*(double) const;
-	Monom& operator*=(double);
+	Monom operator*(long double) const;
+	Monom& operator*=(long double);
 
 	//The comparison of monomials takes place first by degree x, then by y, then by z, then by coefficient
 	bool operator==(const Monom&) const;
@@ -52,19 +52,19 @@ public:
 	bool canBeAdded(const Monom&) const;
 	bool canBeDivided(const Monom&) const;
 
-	double getCoefficient() const;
+	long double getCoefficient() const;
 	unsigned int getXDegree() const;
 	unsigned int getYDegree() const;
 	unsigned int getZDegree() const;
 
-	void setCoefficient(double c);
+	void setCoefficient(long double c);
 	void setXDegree(unsigned int x);
 	void setYDegree(unsigned int y);
 	void setZDegree(unsigned int z);
 
-	double calculate(double x, double y, double z) const;
+	long double calculate(long double x, long double y, long double z) const;
 
-	static double getEPS();
+	static long double getEPS();
 };
 
-Monom operator*(double, const Monom&);
+Monom operator*(long double, const Monom&);
