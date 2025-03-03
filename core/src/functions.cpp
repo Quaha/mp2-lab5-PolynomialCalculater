@@ -72,6 +72,14 @@ Data __MINUS__OPERATOR__(const vector<Data>& parameters) {
     vector<Data> values = getValues(parameters);
 
     if (parameters.size() == 1) {
+        if (values[0].getType() == REAL) {
+            values[0].data = _rtos(-_stor(values[0].data));
+        }
+        else {
+            Polynomial p = _stop(values[0].data);
+            p = -p;
+            values[0].data = _ptos(p);
+        }
         return values[0];
     }
 
@@ -102,15 +110,11 @@ Data __MINUS__OPERATOR__(const vector<Data>& parameters) {
 }
 
 Data __MULTIPLY__OPERATOR__(const vector<Data>& parameters) {
-    if (parameters.size() == 0 || parameters.size() > 2) {
+    if (parameters.size() != 2) {
         throw std::invalid_argument("ERROR: invalid number of arguments!");
     }
 
     vector<Data> values = getValues(parameters);
-
-    if (parameters.size() == 1) {
-        return values[0];
-    }
 
     Data result;
 
@@ -139,15 +143,11 @@ Data __MULTIPLY__OPERATOR__(const vector<Data>& parameters) {
 }
 
 Data __DIVISION__OPERATOR__(const vector<Data>& parameters) {
-    if (parameters.size() == 0 || parameters.size() > 2) {
+    if (parameters.size() != 2) {
         throw std::invalid_argument("ERROR: invalid number of arguments!");
     }
 
     vector<Data> values = getValues(parameters);
-
-    if (parameters.size() == 1) {
-        return values[0];
-    }
 
     Data result;
 
@@ -252,9 +252,9 @@ Data calcValue(const vector<Data>& parameters) {
     }
 
     Polynomial p = _stop(values[0].getData());
-    int xd = _stor(values[1].getData());
-    int yd = _stor(values[1].getData());
-    int zd = _stor(values[1].getData());
+    real_type xd = _stor(values[1].getData());
+    real_type yd = _stor(values[2].getData());
+    real_type zd = _stor(values[3].getData());
 
     real_type res = p.calculate(xd, yd, zd);
 

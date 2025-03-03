@@ -132,7 +132,7 @@ Polynomial& Polynomial::operator*=(const Monom& mon) {
 	return *this;
 }
 
-Polynomial Polynomial::operator*(double c) const {
+Polynomial Polynomial::operator*(long double c) const {
 	Polynomial result = *this;
 	for (Monom& mon : result.polynomial) {
 		mon.setCoefficient(mon.getCoefficient() * c);
@@ -140,7 +140,7 @@ Polynomial Polynomial::operator*(double c) const {
 	return result;
 }
 
-Polynomial& Polynomial::operator*=(double c) {
+Polynomial& Polynomial::operator*=(long double c) {
 	for (Monom& mon : this->polynomial) {
 		mon.setCoefficient(mon.getCoefficient() * c);
 	}
@@ -177,7 +177,7 @@ Polynomial& Polynomial::operator%=(const Monom& mon) {
 	return *this;
 }
 
-Polynomial Polynomial::operator/(double c) const {
+Polynomial Polynomial::operator/(long double c) const {
 	if (std::abs(c) < Monom::getEPS()) {
 		throw std::invalid_argument("It is not allowed to divide by 0!");
 	}
@@ -188,7 +188,7 @@ Polynomial Polynomial::operator/(double c) const {
 	return result;
 }
 
-Polynomial& Polynomial::operator/=(double c) {
+Polynomial& Polynomial::operator/=(long double c) {
 	if (std::abs(c) < Monom::getEPS()) {
 		throw std::invalid_argument("It is not allowed to divide by 0!");
 	}
@@ -198,8 +198,8 @@ Polynomial& Polynomial::operator/=(double c) {
 	return *this;
 }
 
-double Polynomial::calculate(double x, double y, double z) const {
-	double result = 0;
+long double Polynomial::calculate(long double x, long double y, long double z) const {
+	long double result = 0;
 	for (const Monom& mon : this->polynomial) {
 		result += mon.calculate(x, y, z);
 	}
@@ -210,7 +210,7 @@ List<Monom> Polynomial::getMonoms() const {
 	return polynomial;
 }
 
-Polynomial operator*(double c, const Polynomial& pol) {
+Polynomial operator*(long double c, const Polynomial& pol) {
 	return pol * c;
 }
 
