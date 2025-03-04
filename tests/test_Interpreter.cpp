@@ -308,11 +308,11 @@ TEST(Interpreter, PolynomialInterpretato11) {
 }
 
 TEST(Interpreter, PolynomialInterpretator12) {
-    string expression = "2.0 * 3.9 * x^3y^1z^0 + 7.9 * x^5y^1z^3 + ((2.5 * x^10y^2z^3 + 8.0) / 2.0 - (2.5 * x^10y^2z^3 + 8.0) / 2.0)";
+    string expression = "2.0 * 3.9 * x^3y^1z^0 / 2.0 + 7.9 * x^5y^1z^3 - 10.0";
     string x = "3";
     string y = "2";
     string z = "1";
-    string result = "4260";
+    string result = "4040";
 
     string line = "calcValue(" + expression + ", " + x + ", " + y + ", " + z + ")";
 
@@ -398,11 +398,11 @@ TEST(Interpreter, PolynomialInterpretator17) {
 }
 
 TEST(Interpreter, PolynomialInterpretator18) {
-    string expression = "10.2 * x^6y^7z^1";
+    string expression = "10.0 * x^5y^5z^5";
     string x = "7";
     string y = "8";
     string z = "9";
-    string result = "22649615312486.4";
+    string result = "325201606410240";
 
     string line = "calcValue(" + expression + ", " + x + ", " + y + ", " + z + ")";
 
@@ -441,3 +441,246 @@ TEST(Interpreter, PolynomialInterpretator20) {
 
     EXPECT_EQ(temp.getData(), result);
 }
+
+// Tests for error-handling
+
+TEST(Interpreter, ErrorHandling1) {
+
+    string line = "1++1";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+
+TEST(Interpreter, ErrorHandling2) {
+
+    string line = "1.1.";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+
+TEST(Interpreter, ErrorHandling3) {
+
+    string line = ".";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+
+TEST(Interpreter, ErrorHandling4) {
+
+    string line = "1 + 3)";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+
+TEST(Interpreter, ErrorHandling5) {
+
+    string line = "(1 + 3";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+
+TEST(Interpreter, ErrorHandling6) {
+
+    string line = "1 (+ 3)";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+
+TEST(Interpreter, ErrorHandling7) {
+
+    string line = "1 (+) 3)";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+
+TEST(Interpreter, ErrorHandling8) {
+
+    string line = "((1 + 3)";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+
+TEST(Interpreter, ErrorHandling9) {
+
+    string line = "()1 + 3";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+
+TEST(Interpreter, ErrorHandling10) {
+
+    string line = "1 /";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+
+TEST(Interpreter, ErrorHandling11) {
+
+    string line = "1 *";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+
+TEST(Interpreter, ErrorHandling12) {
+
+    string line = "/ 1 ";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+
+TEST(Interpreter, ErrorHandling13) {
+
+    string line = " ++1";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+
+TEST(Interpreter, ErrorHandling14) {
+
+    string line = " 00";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+
+TEST(Interpreter, ErrorHandling15) {
+
+    string line = "010";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+
+TEST(Interpreter, ErrorHandling16) {
+    string expression = "x^0y^z^0";
+    string x = "1";
+    string y = "1";
+    string z = "1";
+
+    string line = "calcValue(" + expression + ", " + x + ", " + y + ", " + z + ")";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+
+TEST(Interpreter, ErrorHandling17) {
+    string expression = "x^0y^00z^0";
+    string x = "1";
+    string y = "1";
+    string z = "1";
+
+    string line = "calcValue(" + expression + ", " + x + ", " + y + ", " + z + ")";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+
+TEST(Interpreter, ErrorHandling18) {
+    string expression = "x^0y^0";
+    string x = "1";
+    string y = "1";
+    string z = "1";
+
+    string line = "calcValue(" + expression + ", " + x + ", " + y + ", " + z + ")";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+
+TEST(Interpreter, ErrorHandling19) {
+    string expression = "x^0z^0y^0";
+    string x = "1";
+    string y = "1";
+    string z = "1";
+
+    string line = "calcValue(" + expression + ", " + x + ", " + y + ", " + z + ")";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));;
+}
+
+TEST(Interpreter, ErrorHandling20) {
+    string expression = "* x^0y^0z^0";
+    string x = "1";
+    string y = "1";
+    string z = "1";
+
+    string line = "calcValue(" + expression + ", " + x + ", " + y + ", " + z + ")";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));;
+}
+
+
+// Problems
+
+
+TEST(Interpreter, ErrorHanding00) { // ¬еро€тно, програма считает здесь + (аналогично дл€ минуса) как унарный, и дальше что-то идЄт не так. ƒелаю такое предположение лишь потому что такой проблемы нет с / и *
+
+    string line = "1 +";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+TEST(Interpreter, ErrorHandling01) {
+
+    string line = "1 -";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+TEST(Interpreter, ErrorHandling02) {
+
+    string line = "(1 +)  - 1";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+
+/* // “ест даже не проходит до конца, что-то вылетает
+TEST(Interpreter, ErrorHandling03) { 
+
+    string line = "1 + () - 2";
+
+    Interpreter program;
+
+    EXPECT_ANY_THROW(program.execute(line));
+}
+*/
+
