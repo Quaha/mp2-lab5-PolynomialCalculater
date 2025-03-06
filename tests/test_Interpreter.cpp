@@ -673,7 +673,6 @@ TEST(Interpreter, ErrorHandling02) {
     EXPECT_ANY_THROW(program.execute(line));
 }
 
-/* // “ест даже не проходит до конца, что-то вылетает
 TEST(Interpreter, ErrorHandling03) { 
 
     string line = "1 + () - 2";
@@ -682,5 +681,5 @@ TEST(Interpreter, ErrorHandling03) {
 
     EXPECT_ANY_THROW(program.execute(line));
 }
-*/
+
 

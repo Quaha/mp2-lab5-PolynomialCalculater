@@ -259,6 +259,11 @@ vector<Data> Interpreter::LexicalAnalyzer::divideIntoTokens(const string& line) 
 			correct_line.push_back(C);
 		}
 	}
+	
+	if (!correct_line.empty() && (correct_line.back() == '+' || correct_line.back() == '-')) {
+		throw std::runtime_error("ERROR: incorrect position of the operator!");
+	}
+
 	correct_line.push_back(';');
 
 	vector<Data> tokens(0);
@@ -349,6 +354,7 @@ Interpreter::SerialAnalyzer::SerialAnalyzer() {
 	}
 
 	allowed[OPERATOR][OPERATOR] = false;
+	allowed[OPERATOR][SPECIAL_SYMBOL] = false;
 
 	for (int i = 0; i < values_statuses.size(); i++) {
 		allowed[i][FUNCTION] = false;
@@ -420,6 +426,9 @@ void perform_stack(vector<Data>& values, vector<Data>& actions, vector<int>& sta
 		}
 
 		if (stack_of_counts.back() > 0) {
+			if (values.empty()) {
+				throw std::logic_error("ERROR: something went wrong!");
+			}
 			parameters.push_back(values.back());
 			values.pop_back();
 			stack_of_counts.back()--;
