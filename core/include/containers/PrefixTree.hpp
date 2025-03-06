@@ -35,7 +35,7 @@ public:
 		nodes.push_back(Node());
 	}
 
-	void setWord(const string& S, const DataType &data) {
+	void insert(const string& S, const DataType &data) {
 		int curr_state = 0;
 		for (char C : S) {
 			if (!nextStateExist(curr_state, C)) {

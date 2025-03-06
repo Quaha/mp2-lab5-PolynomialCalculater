@@ -6,103 +6,87 @@
 using std::pair;
 using std::vector;
 
-template <class TKey, class TValue>
-class OrderedTable : public Container<TKey, TValue> {
+template <class TKey, class TValue> class OrderedTable {
 protected:
     vector<pair<TKey, TValue>> data;
+
 public:
 
-    class Iterator : public Container<TKey, TValue>::Iterator {
+    template <class TKey, class TValue> class Iterator {
     protected:
 
         int data_position = 0;
+        OrderedTable<TKey, TValue>* container;
 
-        Iterator(int start_position) {
-            data_position = start_position;
-        }
+        Iterator(int start_position, OrderedTable<TKey, TValue>* container)
+            : data_position(start_position), container(container) {}
 
     public:
 
-        ~Iterator() override {
-
+        std::pair<TKey, TValue>& operator*(){
+            return container->data[data_position];
         }
 
-        std::pair<TKey, TValue&> operator*() override {
-            return std::pair<TKey, TValue&>(data[data_position].first, data[data_position].second);
+        const std::pair<TKey, TValue>& operator*() const {
+            return container->data[data_position];
         }
 
-        Iterator& operator++() override {
+        Iterator& operator++() {
             ++data_position;
-            if (data_position > data.size()) {
+            if (data_position > container->data.size()) {
                 data_position = 0;
             }
             return *this;
         }
 
-        Iterator& operator--() override {
+        Iterator& operator--(){
             --data_position;
             if (data_position < 0) {
-                data_position = data.size();
+                data_position = container->data.size();
             }
             return *this;
         }
 
-        Iterator operator++(int) override {
-            int prev_position = data_position;
-            ++data_position;
-            if (data_position > data.size()) {
-                data_position = 0;
-            }
-            return Iterator(prev_position);
-        }
-
-        Iterator operator--(int) override {
-            int prev_position = data_position;
-            --data_position;
-            if (data_position < 0) {
-                data_position = data.size();
-            }
-            return Iterator(prev_position);
-        }
-
-        bool operator==(const Iterator& other) const override {
+        bool operator==(const Iterator& other) const {
             return this->data_position == other.data_position;
         }
 
-        bool operator!=(const Iterator& other) const override {
+        bool operator!=(const Iterator& other) const {
             return this->data_position != other.data_position;
-        } 
+        }
+
+        friend class OrderedTable;
     };
 
-    Containter() override {
+    OrderedTable() {
 
     }
 
-    ~Container() override {
+    ~OrderedTable(){
 
     }
 
-    Iterator begin() const override {
-        return Iterator(0);
+    Iterator<TKey, TValue> begin() {
+        return Iterator<TKey, TValue>(0, this);
     }
 
-    Iterator end() const override {
-        return Iterator(data.size());
+    Iterator<TKey, TValue> end() {
+        return Iterator<TKey, TValue>(data.size(), this);
     }
 
-    Iterator insert(const TKey& key, const TValue& value) override {
+    Iterator<TKey, TValue> insert(const TKey& key, const TValue& value) {
         data.push_back(std::make_pair(key, value));
         int curr_pos = data.size() - 1;
         while (curr_pos > 0 && data[curr_pos - 1].first > data[curr_pos].first) {
             swap(data[curr_pos - 1], data[curr_pos]);
             --curr_pos;
         }
-        return Iterator(curr_pos);
+        return Iterator<TKey, TValue>(curr_pos, this);
     }
 
-    Iterator erase(const TKey& key) override {
-        auto it = find(key);
-        int pos = it.data_position;
+    Iterator<TKey, TValue> erase(const TKey& key) {
+        Iterator<TKey, TValue> it = find(key);
+        int pos = it->data_position;
 
         if (pos != data.size()) {
             while (pos < data.size() - 1) {
@@ -116,7 +100,7 @@ public:
         return it;
     }
 
-    Iterator find(const TKey& key) const override {
+    Iterator<TKey, TValue> find(const TKey& key){
 
         int l = 0;
         int r = data.size() - 1;
@@ -142,18 +126,30 @@ public:
         if (data[r].first != key) {
             return end();
         }
-        return Iterator(r);
+
+        return Iterator<TKey, TValue>(r, this);
     }
 
-    int size() const override {
+    bool isExist(const TKey& key) {
+        return this->find(key) != this->end();
+    }
+
+    TValue& operator[](const TKey& key) {
+        if (!this->isExist(key)) {
+            this->insert(key, TValue());
+        }
+        return (*this->find(key)).second;
+    }
+
+    int size() const{
         return data.size();
     }
 
-    bool empty() const override {
+    bool empty() const {
         return data.empty();
     }
 
-    void clear() override {
+    void clear(){
         data.clear();
     }
 };
