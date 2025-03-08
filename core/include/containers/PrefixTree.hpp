@@ -2,19 +2,18 @@
 
 #include "includes.hpp"
 
-template<typename DataType>
-class PrefixTree {
+template<class TValue> class PrefixTree {
 protected:
 	struct Node {
 		map<char, int> next;
-		DataType data;
+		TValue data;
 		bool is_terminal = false;
 	};
 
 	vector<Node> nodes;
 
 	void createNextState(int curr_state, char C) {
-		nodes[curr_state].next[C] = nodes.size();
+		nodes[curr_state].next[C] = (int)nodes.size();
 		nodes.push_back(Node());
 	}
 
@@ -35,7 +34,7 @@ public:
 		nodes.push_back(Node());
 	}
 
-	void setWord(const string& S, const DataType &data) {
+	void insert(const string& S, const TValue &data) {
 		int curr_state = 0;
 		for (char C : S) {
 			if (!nextStateExist(curr_state, C)) {
@@ -58,7 +57,7 @@ public:
 		return nodes[curr_state].is_terminal;
 	}
 
-	DataType getData(const string& S) const {
+	TValue getData(const string& S) const {
 		int curr_state = 0;
 		for (char C : S) {
 			if (!nextStateExist(curr_state, C)) {

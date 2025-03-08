@@ -17,7 +17,7 @@ bool Automat::nextStateExist(int curr_state, char C) const {
 }
 
 void Automat::createNextState(int curr_state, char C, type status) {
-	nodes[curr_state].next[C] = nodes.size();
+	nodes[curr_state].next[C] = (int)nodes.size();
 	nodes.push_back(Node(status));
 }
 

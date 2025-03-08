@@ -1,15 +1,16 @@
 #pragma once
 
-#include "includes.hpp"
+#include <vector>
+#include <map>
 
 struct Automat {
 	struct Node {
-		map<char, int> next;
+		std::map<char, int> next;
 		type status;
 		Node(type status) : status(status) {};
 	};
 
-	vector<Node> nodes;
+	std::vector<Node> nodes;
 
 	Automat();
 	Automat(size_t size);

@@ -16,7 +16,7 @@ Data convertToValue(Data data) {
         return data;
     }
     else if (data.getType() == POLYNOMIAL_VARIABLE || data.getType() == REAL_VARIABLE) {
-        data = global_memory->program_data.getData(data.getData());
+        data = global_memory->program_data[data.getData()];
         return data;
     }
     else {

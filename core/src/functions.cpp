@@ -183,7 +183,7 @@ Data __EQUAL__OPERATOR__(const vector<Data>& parameters) {
         throw std::invalid_argument("ERROR: value can only be assigned to a variable!");
     }
 
-    global_memory->program_data.setWord(name, values[0]);
+    global_memory->program_data.insert(name, values[0]);
 
     return values[0];
 }

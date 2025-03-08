@@ -15,13 +15,13 @@ inline Monom _stom(const std::string value) { // string to Monom
 	int y_pos = 0;
 	int z_pos = 0;
 
-	while (value[x_pos] != 'x' && x_pos < value.size()) {
+	while (value[x_pos] != 'x' && x_pos < (int)value.size()) {
 		x_pos++;
 	}
-	while (value[y_pos] != 'y' && y_pos < value.size()) {
+	while (value[y_pos] != 'y' && y_pos < (int)value.size()) {
 		y_pos++;
 	}
-	while (value[z_pos] != 'z' && z_pos < value.size()) {
+	while (value[z_pos] != 'z' && z_pos < (int)value.size()) {
 		z_pos++;
 	}
 
@@ -30,10 +30,10 @@ inline Monom _stom(const std::string value) { // string to Monom
 		coef = _stor(value.substr(0, x_pos - 1));
 	}
 
-	long long x_deg = 0, y_deg = 0, z_deg = 0;
-	x_deg = std::stoll(value.substr(x_pos + 2, y_pos - x_pos - 2));
-	y_deg = std::stoll(value.substr(y_pos + 2, z_pos - y_pos - 2));
-	z_deg = std::stoll(value.substr(z_pos + 2, value.size() - z_pos - 2));
+	unsigned int x_deg = 0, y_deg = 0, z_deg = 0;
+	x_deg = std::stoul(value.substr(x_pos + 2, y_pos - x_pos - 2));
+	y_deg = std::stoul(value.substr(y_pos + 2, z_pos - y_pos - 2));
+	z_deg = std::stoul(value.substr(z_pos + 2, value.size() - z_pos - 2));
 	return Monom(coef, x_deg, y_deg, z_deg);
 }
 
