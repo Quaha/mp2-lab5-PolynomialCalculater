@@ -1,34 +1,32 @@
 #pragma once
 
-#include <iostream>
-#include <vector>
-
-using std::pair;
-using std::vector;
+#include "includes.hpp"
 
 template <class TKey, class TValue> class OrderedTable {
 protected:
-    vector<pair<TKey, TValue>> data;
+
+    std::vector<std::pair<TKey, TValue>> data;
 
 public:
-
-    template <class TKey, class TValue> class Iterator {
+    class Iterator {
     protected:
 
         int data_position = 0;
         OrderedTable<TKey, TValue>* container;
 
-        Iterator(int start_position, OrderedTable<TKey, TValue>* container)
-            : data_position(start_position), container(container) {}
+        Iterator(int start_position, OrderedTable<TKey, TValue>* container):
+            data_position(start_position),
+            container(container)
+        {}
 
     public:
 
-        std::pair<TKey, TValue>& operator*(){
-            return container->data[data_position];
+        std::pair<const TKey&, TValue&> operator*() {
+            return { container->data[data_position].first, container->data[data_position].second };
         }
 
-        const std::pair<TKey, TValue>& operator*() const {
-            return container->data[data_position];
+        const std::pair<const TKey&, const TValue&> operator*() const {
+            return { container->data[data_position].first, container->data[data_position].second };
         }
 
         Iterator& operator++() {
@@ -66,44 +64,40 @@ public:
 
     }
 
-    Iterator<TKey, TValue> begin() {
-        return Iterator<TKey, TValue>(0, this);
+    Iterator begin() const {
+        return Iterator(0, const_cast<OrderedTable<TKey, TValue>*>(this));
     }
 
-    Iterator<TKey, TValue> end() {
-        return Iterator<TKey, TValue>(data.size(), this);
+    Iterator end() const {
+        return Iterator((int)data.size(), const_cast<OrderedTable<TKey, TValue>*>(this));
     }
 
-    Iterator<TKey, TValue> insert(const TKey& key, const TValue& value) {
+    Iterator insert(const TKey& key, const TValue& value) {
         data.push_back(std::make_pair(key, value));
-        int curr_pos = data.size() - 1;
+
+        int curr_pos = (int)data.size() - 1;
         while (curr_pos > 0 && data[curr_pos - 1].first > data[curr_pos].first) {
-            swap(data[curr_pos - 1], data[curr_pos]);
+            std::swap(data[curr_pos - 1], data[curr_pos]);
             --curr_pos;
         }
-        return Iterator<TKey, TValue>(curr_pos, this);
+        return Iterator(curr_pos, this);
     }
 
-    Iterator<TKey, TValue> erase(const TKey& key) {
-        Iterator<TKey, TValue> it = find(key);
-        int pos = it->data_position;
+    Iterator erase(const TKey& key) {
+        Iterator it = find(key);
 
-        if (pos != data.size()) {
-            while (pos < data.size() - 1) {
-                swap(data[pos], data[pos + 1]);
-                pos++;
-            }
-
-            data.pop_back();
+        if (it != this->end()) {
+            int pos = it->data_position;
+            data.erase(data.begin() + pos);
         }
 
         return it;
     }
 
-    Iterator<TKey, TValue> find(const TKey& key){
+    Iterator find(const TKey& key) const {
 
         int l = 0;
-        int r = data.size() - 1;
+        int r = (int)data.size() - 1;
 
         if (data[l].first >= key) {
             r = l;
@@ -127,14 +121,21 @@ public:
             return end();
         }
 
-        return Iterator<TKey, TValue>(r, this);
+        return Iterator(r, const_cast<OrderedTable<TKey, TValue>*>(this));
     }
 
-    bool isExist(const TKey& key) {
+    bool isExist(const TKey& key) const {
         return this->find(key) != this->end();
     }
 
     TValue& operator[](const TKey& key) {
+        if (!this->isExist(key)) {
+            this->insert(key, TValue());
+        }
+        return (*this->find(key)).second;
+    }
+
+    const TValue& operator[](const TKey& key) const {
         if (!this->isExist(key)) {
             this->insert(key, TValue());
         }

@@ -10,14 +10,12 @@
 #include <algorithm>
 #include <sstream>
 #include <iomanip>
-
+#include <utility>
 
 using std::vector;
 using std::string;
 using std::map;
 using std::set;
-
-// Basic conversions
 
 class Polynomial;
 
