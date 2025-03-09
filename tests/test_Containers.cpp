@@ -11,9 +11,12 @@ protected:
 };
 
 // Tables types (add new tables here)
-using TableTypes = ::testing::Types</*OrderedTable<std::string, double>,*/ UnorderedTable<std::string, double>>;
-TYPED_TEST_SUITE(TableTest, TableTypes);
+using TableTypes = ::testing::Types<
+	OrderedTable<std::string, double>,
+	UnorderedTable<std::string, double>
+>;
 
+TYPED_TEST_SUITE(TableTest, TableTypes);
 
 /* --- Basic tests --- */
 

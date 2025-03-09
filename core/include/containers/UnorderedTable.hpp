@@ -146,7 +146,7 @@ public:
         // Если ключа нет, то исключение
     }
 
-	int size() const {
+	size_t size() const {
         return data.size();
 	}
 
