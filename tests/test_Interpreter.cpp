@@ -644,11 +644,7 @@ TEST(Interpreter, ErrorHandling20) {
     EXPECT_ANY_THROW(program.execute(line));;
 }
 
-
-// Problems
-
-
-TEST(Interpreter, ErrorHanding00) { // ¬еро€тно, програма считает здесь + (аналогично дл€ минуса) как унарный, и дальше что-то идЄт не так. ƒелаю такое предположение лишь потому что такой проблемы нет с / и *
+TEST(Interpreter, ErrorHanding00) { 
 
     string line = "1 +";
 

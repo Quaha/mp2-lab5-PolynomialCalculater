@@ -130,14 +130,14 @@ public:
 
     TValue& operator[](const TKey& key) {
         if (!this->isExist(key)) {
-            this->insert(key, TValue());
-        }
+            throw std::runtime_error("No such key in table");
+    }
         return (*this->find(key)).second;
     }
 
     const TValue& operator[](const TKey& key) const {
         if (!this->isExist(key)) {
-            this->insert(key, TValue());
+            throw std::runtime_error("No such key in table");
         }
         return (*this->find(key)).second;
     }

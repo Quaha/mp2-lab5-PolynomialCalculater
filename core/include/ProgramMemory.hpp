@@ -6,6 +6,7 @@
 #include "Data.hpp"
 
 #include "OrderedTable.hpp"
+#include "UnorderedTable.hpp"
 
 using function_type = std::function<Data(const std::vector<Data>&)>;
 

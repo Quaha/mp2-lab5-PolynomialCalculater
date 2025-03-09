@@ -12,6 +12,10 @@
 #include <iomanip>
 #include <utility>
 
+// containers
+#include "UnorderedTable.hpp"
+#include "OrderedTable.hpp"
+
 using std::vector;
 using std::string;
 using std::map;
