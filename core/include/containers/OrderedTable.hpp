@@ -29,6 +29,10 @@ public:
             return { container->data[data_position].first, container->data[data_position].second };
         }
 
+        std::pair<TKey, TValue>* operator->() const {
+            return &container[data_position];
+        }
+
         Iterator& operator++() {
             ++data_position;
             if (data_position > container->data.size()) {
@@ -87,7 +91,7 @@ public:
         Iterator it = find(key);
 
         if (it != this->end()) {
-            int pos = it->data_position;
+            int pos = it.data_position;
             data.erase(data.begin() + pos);
         }
 
@@ -95,6 +99,10 @@ public:
     }
 
     Iterator find(const TKey& key) const {
+
+        if (this->empty()) {
+            return this->end();
+        }
 
         int l = 0;
         int r = (int)data.size() - 1;
@@ -118,7 +126,7 @@ public:
         }
 
         if (data[r].first != key) {
-            return end();
+            return this->end();
         }
 
         return Iterator(r, const_cast<OrderedTable<TKey, TValue>*>(this));
@@ -130,19 +138,19 @@ public:
 
     TValue& operator[](const TKey& key) {
         if (!this->isExist(key)) {
-            this->insert(key, TValue());
-        }
+            throw std::runtime_error("No such key in table");
+    }
         return (*this->find(key)).second;
     }
 
     const TValue& operator[](const TKey& key) const {
         if (!this->isExist(key)) {
-            this->insert(key, TValue());
+            throw std::runtime_error("No such key in table");
         }
         return (*this->find(key)).second;
     }
 
-    int size() const{
+    size_t size() const{
         return data.size();
     }
 

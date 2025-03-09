@@ -1,16 +1,21 @@
-#include <vector>
-#include <iostream>
+#pragma once
+
+#include "includes.hpp"
 
 template<class TKey, class TValue>
 class UnorderedTable {
-private:
+protected:
+
 	std::vector<std::pair<TKey, TValue>> data;
+
 public:
-	UnorderedTable() {};
+	
+    UnorderedTable() {};
 	
     class Iterator {
     public:
-        std::pair<TKey, TValue>* pntr;
+        
+        std::pair<TKey, TValue>* pntr; 
 
         Iterator(std::pair<TKey, TValue>* obj) : pntr(obj) {}
 
@@ -79,33 +84,43 @@ public:
     };
 
     Iterator begin() {
-        return Iterator(&data[0]);
+        if (data.empty()) {
+            return Iterator(nullptr);
+        }
+        return Iterator(&data[0]); 
     }
+
     Iterator end() {
-        return Iterator(&data[data.size()]);
+        if (data.empty()) {
+            return Iterator(nullptr);
+        }
+        return Iterator(data.data() + data.size());
     }
 
 	Iterator insert(const TKey& key, const TValue& value) {
 		data.push_back({ key, value });
-		return Iterator It(&data.back());
+		return Iterator(&data.back());
 	}
 
-	Iterator erase(const TKey& key) {
-		// Возвр it на сл. элемент
-		for (auto It = data.begin(); It != data.end(); It++) {
-			if (It->first == key) {
-                It = data.erase(It);
+    Iterator erase(const TKey& key) {
+        // Возвр it на сл. элемент
+        for (auto It = data.begin(); It != data.end(); It++) {
+            if (It->first == key) {
+                It = data.erase(It); 
+                if (It == data.end()) {
+                    return end(); 
+                }
                 return Iterator(&(*It));
-			}
-		}
-		return end();
-	}
+            }
+        }
+        return end();
+    }
 
 	Iterator find(const TKey& key) {
         // Не находит - итератор на конец
-        for (auto it = data.begin(); it != data.end(); ++it) {
-            if (it->first == key) {
-                return Iterator(&(*it));
+        for (auto It = data.begin(); It != data.end(); It++) {
+            if (It->first == key) {
+                return Iterator(&(*It));
             }
         }
         return end();
@@ -121,7 +136,17 @@ public:
 		// Если ключа нет, то исключение
 	}
 
-	int size() const {
+    const TValue& operator[](const TKey& key) const {
+        for (auto& pair : data) {
+            if (pair.first == key) {
+                return pair.second;
+            }
+        }
+        throw std::runtime_error("No such key in table");
+        // Если ключа нет, то исключение
+    }
+
+	size_t size() const {
         return data.size();
 	}
 
@@ -129,4 +154,11 @@ public:
         return data.empty();
 	}
 
+    void clear() {
+        data.clear();
+    }
+
+    bool isExist(const TKey& key) {
+        return find(key) != end();
+    }
 };
