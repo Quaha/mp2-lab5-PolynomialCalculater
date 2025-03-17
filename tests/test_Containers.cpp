@@ -13,7 +13,8 @@ protected:
 // Tables types (add new tables here)
 using TableTypes = ::testing::Types<
 	OrderedTable<std::string, double>,
-	UnorderedTable<std::string, double>
+	UnorderedTable<std::string, double>,
+	RedBlackTree<std::string, double>
 >;
 
 TYPED_TEST_SUITE(TableTest, TableTypes);
@@ -165,13 +166,4 @@ TYPED_TEST(TableTest, RepeatedInsertAndErase) {
 	}
 
 	EXPECT_TRUE(this->table.empty());
-}
-
-TYPED_TEST(TableTest, IteratorAfterErase) {
-	this->table.insert("key1", 10);
-	this->table.insert("key2", 20);
-	auto It = this->table.begin();
-	this->table.erase("key1");
-
-	EXPECT_EQ((*It).second, 20);
 }

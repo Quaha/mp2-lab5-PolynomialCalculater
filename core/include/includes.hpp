@@ -15,6 +15,7 @@
 // containers
 #include "UnorderedTable.hpp"
 #include "OrderedTable.hpp"
+#include "RedBlackTree.hpp"
 
 using std::vector;
 using std::string;
