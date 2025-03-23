@@ -5,7 +5,7 @@
 #include <set>
 #include <algorithm>
 
-#include "RedBlackTree.hpp"
+#include "includes.hpp"
 
 template <typename TreeType>
 class SearchTreeTest : public ::testing::Test {
