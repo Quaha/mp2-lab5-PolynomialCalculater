@@ -10,7 +10,7 @@
 
 using function_type = std::function<Data(const std::vector<Data>&)>;
 
-#define MemoryType RedBlackTree
+#define MemoryType HashTableCA
 
 class MemoryManager {
 public:
