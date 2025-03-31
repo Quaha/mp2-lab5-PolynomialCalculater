@@ -15,7 +15,8 @@ using TableTypes = ::testing::Types<
 	OrderedTable<std::string, double>,
 	UnorderedTable<std::string, double>,
 	RedBlackTree<std::string, double>,
-	AVLTree<std::string, double>
+	AVLTree<std::string, double>,
+	HashTableCA<std::string, double>
 >;
 
 TYPED_TEST_SUITE(TableTest, TableTypes);
