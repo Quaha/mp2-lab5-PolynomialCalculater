@@ -16,7 +16,8 @@ using TableTypes = ::testing::Types<
 	UnorderedTable<std::string, double>,
 	RedBlackTree<std::string, double>,
 	AVLTree<std::string, double>,
-	HashTableCA<std::string, double>
+	HashTableCA<std::string, double>,
+	HashTableOA<std::string, double>
 >;
 
 TYPED_TEST_SUITE(TableTest, TableTypes);
@@ -148,7 +149,7 @@ TYPED_TEST(TableTest, CanEraseManyElements) {
 	for (int i = 0; i < 100; i++) {
 		this->table.erase("key" + std::to_string(i));
 	}
-
+	EXPECT_EQ(this->table.size(), 0);
 	EXPECT_TRUE(this->table.empty());
 }
 

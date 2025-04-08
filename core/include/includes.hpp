@@ -18,6 +18,7 @@
 #include "RedBlackTree.hpp"
 #include "AVLTree.hpp"
 #include "HashTableCA.hpp"
+#include "HashTableOA.hpp"
 
 using std::vector;
 using std::string;

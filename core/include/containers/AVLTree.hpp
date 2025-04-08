@@ -11,7 +11,7 @@ public:
     public:
         Node* lChild;
         Node* rChild;
-        
+
         std::pair<TKey, TValue> data;
 
         int height;
@@ -28,8 +28,7 @@ public:
     int sz;
 
     class Iterator {
-    private:
-        std::stack<Node*> nodes;
+    protected:
 
         void goLeft(Node* nd) {
             while (nd) {
@@ -37,14 +36,27 @@ public:
                 nd = nd->lChild;
             }
         }
+
     public:
+
+        std::stack<Node*> nodes;
 
         Iterator(Node* root) {
             goLeft(root);
         }
 
         std::pair<TKey, TValue> operator*() const {
+            if (nodes.empty()) {
+                throw std::runtime_error("Iterator is empty");
+            }
             return nodes.top()->data;
+        }
+
+        std::pair<TKey, TValue>* operator->() const {
+            if (nodes.empty()) {
+                throw std::runtime_error("Iterator is empty");
+            }
+            return &(nodes.top()->data);
         }
 
         Iterator& operator++() {
@@ -71,9 +83,39 @@ public:
     };
 
     AVLTree() : root(nullptr), sz(0) {};
+    ~AVLTree() { 
+        clear(root); 
+    }
+    AVLTree(const AVLTree& t) : root(nullptr), sz(0) {
+        if (t.root) {
+            root = rebuildTree(t.root); 
+            sz = t.sz;               
+        }
+    }
+    AVLTree& operator=(const AVLTree& t) {
+        if (this != &t) {           
+            clear();                    
+            if (t.root) {
+                root = rebuildTree(t.root); 
+                sz = t.sz;               
+            }
+        }
+        return *this; 
+    }
 
     /* --- Helping functions --- */
 protected:
+    Node* rebuildTree(Node* nd) {
+        if (!nd) return nullptr; 
+
+        Node* newNode = new Node(nd->data.first, nd->data.second);
+        newNode->height = nd->height;                             
+        newNode->lChild = rebuildTree(nd->lChild);                  
+        newNode->rChild = rebuildTree(nd->rChild);                 
+
+        return newNode; 
+    }
+
     int getHeight(Node* nd) {
         if (nd == nullptr) return 0;
         return nd->height;
@@ -92,13 +134,13 @@ protected:
         x->rChild = y;
         y->lChild = z;
         /*
-        
+
              y            x
-            / \          / \ 
-           x   yr  ->   xl  y   
+            / \          / \
+           x   yr  ->   xl  y
           / \              / \
          xr  z            z  yr
-        
+
         */
         updHeight(x);
         updHeight(y);
@@ -111,13 +153,13 @@ protected:
         x->lChild = y;
         y->rChild = z;
         /*
-        
+
             y             x
            / \           / \
-          yl  x    ->   y   xr 
+          yl  x    ->   y   xr
              / \       / \
             z   xr    yl  z
-        
+
         */
         updHeight(x);
         updHeight(y);
@@ -142,19 +184,6 @@ protected:
         }
 
         return nd;
-    }
-
-    Node* find(Node* nd, const TKey& key) {
-        if (!nd) return nullptr;
-        if (key < nd->data.first) {
-            return find(nd->lChild, key);
-        }
-        else if (key > nd->data.first) {
-            return find(nd->rChild, key);
-        }
-        else {
-            return nd;
-        }
     }
 
     Node* insert(Node* nd, TKey key, TValue value) {
@@ -235,19 +264,34 @@ protected:
             && (root->data.first < root->rChild->data.first) && isSearchTree(root->rChild));
     }
 
-    
+
 public:
     bool isTreeCorrect() {
+        if (empty()) return 1;
         bool is_search_tree = isSearchTree(root);
-
 
         return is_search_tree;
     }
 
     /* --- Main functions --- */
     Iterator find(const TKey& key) {
-        return Iterator(find(root, key));
+        Node* current = root;
+        Iterator it(nullptr);
+        while (current) {
+            it.nodes.push(current);
+            if (key < current->data.first) {
+                current = current->lChild;
+            }
+            else if (key > current->data.first) {
+                current = current->rChild;
+            }
+            else {
+                return it;
+            }
+        }
+        return end();
     }
+
     Iterator insert(TKey key, TValue value) {
         root = insert(root, key, value);
         return Iterator(find(key));
@@ -273,12 +317,13 @@ public:
         sz = 0;
     }
     bool isExist(const TKey& key) {
-        return find(root, key) != nullptr;
+        Iterator it = find(key);
+        return !it.nodes.empty();
     }
     TValue operator[](const TKey& key) {
-        Node* node = find(root, key);
-        if (node) {
-            return node->data.second;
+        auto itNd = find(key);
+        if (itNd != end()) {
+            return (*itNd).second;
         }
         else {
             throw std::runtime_error("Cant access non existing element");
