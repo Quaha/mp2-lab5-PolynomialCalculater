@@ -1,4 +1,4 @@
-#include "includes.hpp"
+﻿#include "includes.hpp"
 
 #include "Data.hpp"
 #include "ProgramMemory.hpp"
@@ -16,7 +16,7 @@ Data convertToValue(Data data) {
         return data;
     }
     else if (data.getType() == POLYNOMIAL_VARIABLE || data.getType() == REAL_VARIABLE) {
-        data = global_memory->program_data[data.getData()];
+        data = global_memory->getVariable(data.getData());
         return data;
     }
     else {

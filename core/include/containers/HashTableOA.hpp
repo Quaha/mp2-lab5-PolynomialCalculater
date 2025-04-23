@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <vector>
 #include <functional>
@@ -23,18 +23,18 @@ protected:
 	int amountOfElements = 0;
 	int usedCells = 0;
 
-	int getHash(const TKey& key) {
+	int getHash(const TKey& key) const {
 		std::hash<TKey> hasher;
 		int hash = hasher(key);
 		return hash;
 	}
 
-	int hashFunction(const TKey& key) {
+	int hashFunction(const TKey& key) const {
 		int hash = getHash(key);
 		return hash % data.size();
 	}
 
-	int iteratingFunction(int pntr) {
+	int iteratingFunction(int pntr) const {
 		return (pntr + 1) % data.size();
 	}
 
@@ -75,17 +75,17 @@ protected:
 public:
 	class Iterator {
 
-		int pntr;
 		std::vector<dataCell>* dataPntr;
+		int pntr;
 
 	public:
 
-		Iterator(std::vector<dataCell>* data) : dataPntr(data), pntr(0) {
+		Iterator(const std::vector<dataCell>* data) : dataPntr(data), pntr(0) {
 			while (pntr < dataPntr->size() && (*dataPntr)[pntr].status != 1) {
 				pntr++;
 			}
 		}
-		Iterator(std::vector<dataCell>* data, int pntr) : dataPntr(data), pntr(pntr) {}
+		Iterator(const std::vector<dataCell>* data, int pntr) : dataPntr(data), pntr(pntr) {}
 
 		std::pair<TKey, TValue> operator*() {
 			if (pntr == dataPntr->size()) throw std::runtime_error("Can't get value from empty iterator");
@@ -134,11 +134,11 @@ public:
 		data.resize(startingCapacity);
 	}
 
-	Iterator begin() {
+	Iterator begin() const{
 		return Iterator(&data);
 	}
 
-	Iterator end() {
+	Iterator end() const{
 		return Iterator(&data, data.size());
 	}
 
@@ -170,7 +170,7 @@ public:
 		throw std::runtime_error("Something went wrong in insert function");
 	}
 
-	Iterator find(const TKey& key) {
+	Iterator find(const TKey& key) const {
 		int pntr = hashFunction(key);
 		int checkedElements = 0;
 		while (checkedElements != data.size()) {
@@ -178,7 +178,9 @@ public:
 			// If cell is empty
 			if (data[pntr].status == 0) return end();
 			// If found cell
-			if (data[pntr].status == 1 && data[pntr].element.first == key) return Iterator(&data, pntr);
+			if (data[pntr].status == 1 && data[pntr].element.first == key) {
+				return Iterator(&data, pntr);
+			}
 		
 			// Else change pntr using change function 
 			pntr = iteratingFunction(pntr);
@@ -197,6 +199,16 @@ public:
 	}
 
 	TValue operator[](const TKey& key) {
+		auto it = find(key);
+		if (it != end()) {
+			return (*it).second;
+		}
+		else {
+			throw std::runtime_error("Cant access non existing element");
+		}
+	}
+
+	const TValue& operator[](const TKey& key) const {
 		auto it = find(key);
 		if (it != end()) {
 			return (*it).second;
@@ -225,7 +237,7 @@ public:
 		return amountOfElements == 0; 
 	}
 
-	bool isExist(const TKey& key) {
+	bool isExist(const TKey& key) const {
 		Iterator it = find(key);
 		return !(it == end());
 	}

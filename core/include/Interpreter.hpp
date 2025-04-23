@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "includes.hpp"
 
@@ -34,6 +34,6 @@ struct Interpreter {
 	LexicalAnalyzer lexical_analyzer;
 	SerialAnalyzer serial_analyzer;
 
-	Interpreter();
+	Interpreter(size_t container_id);
 	Data execute(const string &line);
 };

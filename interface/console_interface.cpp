@@ -1,10 +1,10 @@
-#include <iostream>
+﻿#include <iostream>
 
 #include "Interpreter.hpp"
 
 int main() {
-	
-	Interpreter program;
+
+	Interpreter program(0);
 
 	while (true) {
 		try {

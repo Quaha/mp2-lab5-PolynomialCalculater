@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include "includes.hpp"
 
@@ -83,14 +83,14 @@ public:
         }
     };
 
-    Iterator begin() {
+    Iterator begin()const {
         if (data.empty()) {
             return Iterator(nullptr);
         }
         return Iterator(&data[0]); 
     }
 
-    Iterator end() {
+    Iterator end() const {
         if (data.empty()) {
             return Iterator(nullptr);
         }
@@ -103,7 +103,7 @@ public:
 	}
 
     Iterator erase(const TKey& key) {
-        // Возвр it на сл. элемент
+        // Р’РѕР·РІСЂ it РЅР° СЃР». СЌР»РµРјРµРЅС‚
         for (auto It = data.begin(); It != data.end(); It++) {
             if (It->first == key) {
                 It = data.erase(It); 
@@ -116,8 +116,8 @@ public:
         return end();
     }
 
-	Iterator find(const TKey& key) {
-        // Не находит - итератор на конец
+	Iterator find(const TKey& key) const {
+        // РќРµ РЅР°С…РѕРґРёС‚ - РёС‚РµСЂР°С‚РѕСЂ РЅР° РєРѕРЅРµС†
         for (auto It = data.begin(); It != data.end(); It++) {
             if (It->first == key) {
                 return Iterator(&(*It));
@@ -133,7 +133,7 @@ public:
             }
         }
         throw std::runtime_error("No such key in table");
-		// Если ключа нет, то исключение
+		// Р•СЃР»Рё РєР»СЋС‡Р° РЅРµС‚, С‚Рѕ РёСЃРєР»СЋС‡РµРЅРёРµ
 	}
 
     const TValue& operator[](const TKey& key) const {
@@ -143,7 +143,7 @@ public:
             }
         }
         throw std::runtime_error("No such key in table");
-        // Если ключа нет, то исключение
+        // Р•СЃР»Рё РєР»СЋС‡Р° РЅРµС‚, С‚Рѕ РёСЃРєР»СЋС‡РµРЅРёРµ
     }
 
 	size_t size() const {
@@ -158,7 +158,7 @@ public:
         data.clear();
     }
 
-    bool isExist(const TKey& key) {
+    bool isExist(const TKey& key) const{
         return find(key) != end();
     }
 };

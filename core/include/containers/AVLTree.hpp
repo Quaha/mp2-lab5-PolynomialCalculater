@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <iostream>
 #include <stack>
@@ -252,7 +252,7 @@ protected:
 
     /* --- Functions for testing --- */
 
-    bool isSearchTree(Node* root) {
+    bool isSearchTree(Node* root) const {
         // If no children
         if (!root->lChild) return true;
         // If only left child
@@ -266,7 +266,7 @@ protected:
 
 
 public:
-    bool isTreeCorrect() {
+    bool isTreeCorrect() const{
         if (empty()) return 1;
         bool is_search_tree = isSearchTree(root);
 
@@ -274,7 +274,7 @@ public:
     }
 
     /* --- Main functions --- */
-    Iterator find(const TKey& key) {
+    Iterator find(const TKey& key) const {
         Node* current = root;
         Iterator it(nullptr);
         while (current) {
@@ -305,10 +305,10 @@ public:
     Iterator end() const {
         return Iterator(nullptr);
     }
-    bool empty() {
+    bool empty() const {
         return sz == 0;
     }
-    int size() {
+    int size() const {
         return sz;
     }
     void clear() {
@@ -316,11 +316,13 @@ public:
         root = nullptr;
         sz = 0;
     }
-    bool isExist(const TKey& key) {
+
+    bool isExist(const TKey& key) const {
         Iterator it = find(key);
         return !it.nodes.empty();
     }
-    TValue operator[](const TKey& key) {
+
+    TValue operator[](const TKey& key) const {
         auto itNd = find(key);
         if (itNd != end()) {
             return (*itNd).second;

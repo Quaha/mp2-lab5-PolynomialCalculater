@@ -1,4 +1,4 @@
-#include "includes.hpp"
+﻿#include "includes.hpp"
 
 #include "PrefixTree.hpp"
 #include "Automat.hpp"
@@ -294,11 +294,11 @@ vector<Data> Interpreter::LexicalAnalyzer::divideIntoTokens(const string& line) 
 			}
 			else if (curr_status == VARIABLE) {
 				
-				if (!global_memory->program_data.isExist(stack)) {
+				if (!global_memory->isVariableExists(stack)) {
 					tokens.push_back(Data(VARIABLE, stack));
 				}
 				else {
-					type variable_type = global_memory->program_data[stack].getType();
+					type variable_type = global_memory->getVariable(stack).getType();
 					if (variable_type == POLYNOMIAL) {
 						tokens.push_back(Data(POLYNOMIAL_VARIABLE, stack));
 					}
@@ -311,7 +311,7 @@ vector<Data> Interpreter::LexicalAnalyzer::divideIntoTokens(const string& line) 
 				}
 			}
 			else if (curr_status == FUNCTION) {
-				if (!global_memory->function_data.isExist(stack)) {
+				if (!global_memory->isFunctionExists(stack)) {
 					throw std::runtime_error("ERROR: a nonexistent function was found!");
 				}
 				else {
@@ -371,30 +371,30 @@ void Interpreter::SerialAnalyzer::checkTokens(const vector<Data>& tokens) const 
 }
 
 void processFunctionData() {
-	global_memory->function_data.insert("(", std::make_shared<function_type>(__LEFT__BRACKET__OPERATOR__));
-	global_memory->function_data.insert("sum(", std::make_shared<function_type>(sum));
-	global_memory->function_data.insert("calcValue(", std::make_shared<function_type>(calcValue));
-	global_memory->function_data.insert("+", std::make_shared<function_type>(__PLUS__OPERATOR__));
-	global_memory->function_data.insert("-", std::make_shared<function_type>(__MINUS__OPERATOR__));
-	global_memory->function_data.insert("*", std::make_shared<function_type>(__MULTIPLY__OPERATOR__));
-	global_memory->function_data.insert("/", std::make_shared<function_type>(__DIVISION__OPERATOR__));
-	global_memory->function_data.insert("=", std::make_shared<function_type>(__EQUAL__OPERATOR__));
+	global_memory->setFunction("(", std::make_shared<function_type>(__LEFT__BRACKET__OPERATOR__));
+	global_memory->setFunction("sum(", std::make_shared<function_type>(sum));
+	global_memory->setFunction("calcValue(", std::make_shared<function_type>(calcValue));
+	global_memory->setFunction("+", std::make_shared<function_type>(__PLUS__OPERATOR__));
+	global_memory->setFunction("-", std::make_shared<function_type>(__MINUS__OPERATOR__));
+	global_memory->setFunction("*", std::make_shared<function_type>(__MULTIPLY__OPERATOR__));
+	global_memory->setFunction("/", std::make_shared<function_type>(__DIVISION__OPERATOR__));
+	global_memory->setFunction("=", std::make_shared<function_type>(__EQUAL__OPERATOR__));
 
-	global_memory->objects_priority.insert("(", 0);
-	global_memory->objects_priority.insert("sum(", 0);
-	global_memory->objects_priority.insert("calcValue(", 0);
-	global_memory->objects_priority.insert("+", 100);
-	global_memory->objects_priority.insert("-", 100);
-	global_memory->objects_priority.insert("*", 200);
-	global_memory->objects_priority.insert("/", 200);
-	global_memory->objects_priority.insert("=", -100);
+	global_memory->setPriority("(", 0);
+	global_memory->setPriority("sum(", 0);
+	global_memory->setPriority("calcValue(", 0);
+	global_memory->setPriority("+", 100);
+	global_memory->setPriority("-", 100);
+	global_memory->setPriority("*", 200);
+	global_memory->setPriority("/", 200);
+	global_memory->setPriority("=", -100);
 
-	global_memory->objects_priority.insert(")", -100);
-	global_memory->objects_priority.insert(",", -100);
+	global_memory->setPriority(")", -100);
+	global_memory->setPriority(",", -100);
 }
 
-Interpreter::Interpreter() {
-	global_memory = std::make_unique<MemoryManager>();
+Interpreter::Interpreter(size_t container_id) {
+
 
 	processFunctionData();
 
@@ -402,7 +402,7 @@ Interpreter::Interpreter() {
 
 void perform_stack(vector<Data>& values, vector<Data>& actions, vector<int>& stack_of_priorities, vector<int>& stack_of_counts, int curr_p) {
 	while (!stack_of_priorities.empty() && stack_of_priorities.back() >= curr_p && !actions.empty() && actions.back().getType() == OPERATOR) {
-		shared_ptr<function_type> function = global_memory->function_data[actions.back().getData()];
+		shared_ptr<function_type> function = global_memory->getFunction(actions.back().getData());
 		actions.pop_back();
 		stack_of_priorities.pop_back();
 
@@ -471,7 +471,7 @@ Data Interpreter::execute(const string& line) {
 		}
 
 		else if (curr_token.getType() == SPECIAL_SYMBOL) {
-			int curr_priority = global_memory->objects_priority[curr_token.getData()];
+			int curr_priority = global_memory->getPriority(curr_token.getData());
 			perform_stack(values, actions, stack_of_priorities, stack_of_counts, curr_priority);
 
 			if (curr_token.getData() == ")") {
@@ -514,7 +514,7 @@ Data Interpreter::execute(const string& line) {
 					throw std::runtime_error("ERROR: incorrect input!");
 				}
 
-				shared_ptr<function_type> function = global_memory->function_data[actions.back().getData()];
+				shared_ptr<function_type> function = global_memory->getFunction(actions.back().getData());
 				actions.pop_back();
 				stack_of_priorities.pop_back();
 				Data result = (*function)(parameters);
@@ -529,14 +529,14 @@ Data Interpreter::execute(const string& line) {
 		}
 
 		else if (curr_token.getType() == FUNCTION) {
-			int curr_priority = global_memory->objects_priority[curr_token.getData()];
+			int curr_priority = global_memory->getPriority(curr_token.getData());
 			stack_of_priorities.push_back(curr_priority);
 			stack_of_counts.push_back(0);
 			actions.push_back(curr_token);
 		}
 
 		else if (curr_token.getType() == OPERATOR) {
-			int curr_priority = global_memory->objects_priority[curr_token.getData()];
+			int curr_priority = global_memory->getPriority(curr_token.getData());
 			perform_stack(values, actions, stack_of_priorities, stack_of_counts, curr_priority);
 			if (stack_of_counts.back() == 0) {
 				curr_priority = 1000;
