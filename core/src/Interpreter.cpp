@@ -1,6 +1,6 @@
 ﻿#include "includes.hpp"
 
-#include "PrefixTree.hpp"
+//#include "PrefixTree.hpp"
 #include "Automat.hpp"
 #include "Interpreter.hpp"
 #include "functions.hpp"

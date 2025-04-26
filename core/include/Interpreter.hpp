@@ -2,7 +2,7 @@
 
 #include "includes.hpp"
 
-#include "PrefixTree.hpp"
+//#include "PrefixTree.hpp"
 #include "Automat.hpp"
 #include "Data.hpp"
 

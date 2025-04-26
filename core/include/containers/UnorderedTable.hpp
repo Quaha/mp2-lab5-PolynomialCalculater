@@ -10,17 +10,22 @@ protected:
 
 public:
 	
-    UnorderedTable() {};
+    UnorderedTable() = default;
 	
     class Iterator {
     public:
         
         std::pair<TKey, TValue>* pntr; 
+        const std::pair<TKey, TValue>* constPntr;
 
+        // Added something related to const iterator, but idk why we need this
+        Iterator() = default;
+        Iterator(std::nullptr_t) : pntr(nullptr) {}
         Iterator(std::pair<TKey, TValue>* obj) : pntr(obj) {}
+        Iterator(const std::pair<TKey, TValue>* obj) : pntr(const_cast<std::pair<TKey, TValue>*>(obj)) {}
 
         Iterator& operator++() {
-            pntr++;
+            if (pntr) ++pntr;
             return *this;
         }
 
@@ -31,7 +36,7 @@ public:
         }
 
         Iterator& operator--() {
-            pntr--;
+            if (pntr) --pntr;
             return *this;
         }
 
@@ -41,18 +46,20 @@ public:
             return tmp;
         }
 
-        Iterator operator+(int step) {
+        Iterator operator+(int step) const {
             Iterator res = *this;
-            if (step > 0) {
-                for (int i = 0; i < step; i++) res++;
-            }
-            else {
-                for (int i = 0; i < -step; i++) res--;
+            if (pntr) {
+                if (step > 0) {
+                    for (int i = 0; i < step; i++) ++res;
+                }
+                else {
+                    for (int i = 0; i < -step; i++) --res;
+                }
             }
             return res;
         }
 
-        Iterator operator-(int step) {
+        Iterator operator-(int step) const {
             return *this + (-step);
         }
 
@@ -75,15 +82,17 @@ public:
         }
 
         std::pair<TKey, TValue>& operator*() const {
+            if (!pntr) throw std::runtime_error("Dereferencing null iterator");
             return *pntr;
         }
 
         std::pair<TKey, TValue>* operator->() const {
+            if (!pntr) throw std::runtime_error("Accessing through null iterator");
             return pntr;
         }
     };
 
-    Iterator begin()const {
+    Iterator begin() const {
         if (data.empty()) {
             return Iterator(nullptr);
         }
@@ -97,13 +106,27 @@ public:
         return Iterator(data.data() + data.size());
     }
 
+    Iterator begin() {
+        if (data.empty()) {
+            return Iterator(nullptr);
+        }
+        return Iterator(&data[0]);
+    }
+
+    Iterator end() {
+        if (data.empty()) {
+            return Iterator(nullptr);
+        }
+        return Iterator(data.data() + data.size());
+    }
+
+
 	Iterator insert(const TKey& key, const TValue& value) {
 		data.push_back({ key, value });
 		return Iterator(&data.back());
 	}
 
     Iterator erase(const TKey& key) {
-        // Возвр it на сл. элемент
         for (auto It = data.begin(); It != data.end(); It++) {
             if (It->first == key) {
                 It = data.erase(It); 
@@ -117,7 +140,6 @@ public:
     }
 
 	Iterator find(const TKey& key) const {
-        // Не находит - итератор на конец
         for (auto It = data.begin(); It != data.end(); It++) {
             if (It->first == key) {
                 return Iterator(&(*It));
@@ -133,7 +155,6 @@ public:
             }
         }
         throw std::runtime_error("No such key in table");
-		// Если ключа нет, то исключение
 	}
 
     const TValue& operator[](const TKey& key) const {
@@ -143,7 +164,6 @@ public:
             }
         }
         throw std::runtime_error("No such key in table");
-        // Если ключа нет, то исключение
     }
 
 	size_t size() const {

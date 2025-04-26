@@ -2,7 +2,7 @@
 
 #include "includes.hpp"
 
-#include "PrefixTree.hpp"
+//#include "PrefixTree.hpp"
 #include "Data.hpp"
 
 #include "OrderedTable.hpp"

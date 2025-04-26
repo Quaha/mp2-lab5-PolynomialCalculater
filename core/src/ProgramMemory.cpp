@@ -9,6 +9,9 @@
 #include "AVLTree.hpp"
 #include "RedBlackTree.hpp"
 
+// Cant compile without it
+std::unique_ptr<BaseMemoryManager> global_memory;
+
 void initMemory(size_t container_id) {
 
 	switch (container_id) {

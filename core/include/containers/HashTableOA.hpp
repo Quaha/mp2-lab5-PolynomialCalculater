@@ -5,17 +5,17 @@
 #include <iostream>
 #include <algorithm>
 
-template <class TKey, class TValue> 
+template <class TKey, class TValue>
 class HashTableOA {
 protected:
 	struct dataCell {
 		std::pair<TKey, TValue> element;
-		int status = 0;  
+		int status = 0;
 		// 0-empty 
 		// 1-occupied 
 		// 2-deleted
 
-		dataCell() = default; // IDK what is it, but it dont want to work without it, so just let it be
+		dataCell() = default;
 		dataCell(TKey key, TValue value) : element(key, value), status(1) {}
 	};
 
@@ -75,7 +75,7 @@ protected:
 public:
 	class Iterator {
 
-		std::vector<dataCell>* dataPntr;
+		const std::vector<dataCell>* dataPntr;
 		int pntr;
 
 	public:
@@ -89,14 +89,12 @@ public:
 
 		std::pair<TKey, TValue> operator*() {
 			if (pntr == dataPntr->size()) throw std::runtime_error("Can't get value from empty iterator");
-
 			return (*dataPntr)[pntr].element;
 		}
 
 		std::pair<TKey, TValue>* operator->() {
 			if (pntr == dataPntr->size()) throw std::runtime_error("Can't get value from empty iterator");
-
-			return &(*dataPntr)[pntr].element;
+			return &const_cast<dataCell&>((*dataPntr)[pntr]).element;
 		}
 
 		bool operator==(const Iterator& it) const {
@@ -126,7 +124,7 @@ public:
 		}
 
 		void changeStatus(int status) {
-			(*dataPntr)[pntr].status = status;
+			const_cast<dataCell&>((*dataPntr)[pntr]).status = status;
 		}
 	};
 
@@ -134,17 +132,17 @@ public:
 		data.resize(startingCapacity);
 	}
 
-	Iterator begin() const{
+	Iterator begin() const {
 		return Iterator(&data);
 	}
 
-	Iterator end() const{
+	Iterator end() const {
 		return Iterator(&data, data.size());
 	}
 
 	Iterator insert(const TKey& key, const TValue& val) {
 		if (find(key) != end()) throw std::runtime_error("Inserting element with already existing key");
-		
+
 		rebuildCheck();
 
 		amountOfElements++;
@@ -154,19 +152,15 @@ public:
 		int checkedElements = 0;
 		while (checkedElements != data.size()) {
 			checkedElements++;
-			// If cell is empty, then use it
 			if (data[pntr].status == 0) {
 				data[pntr].status = 1;
 				data[pntr].element.first = key;
 				data[pntr].element.second = val;
 				return Iterator(&data, pntr);
 			}
-
-			// Else change pntr using change function 
 			pntr = iteratingFunction(pntr);
 		}
 
-		// This should never be reached, but if something went wrong
 		throw std::runtime_error("Something went wrong in insert function");
 	}
 
@@ -175,17 +169,12 @@ public:
 		int checkedElements = 0;
 		while (checkedElements != data.size()) {
 			checkedElements++;
-			// If cell is empty
 			if (data[pntr].status == 0) return end();
-			// If found cell
 			if (data[pntr].status == 1 && data[pntr].element.first == key) {
 				return Iterator(&data, pntr);
 			}
-		
-			// Else change pntr using change function 
 			pntr = iteratingFunction(pntr);
 		}
-		// If not found
 		return end();
 	}
 
@@ -195,7 +184,7 @@ public:
 
 		amountOfElements--;
 		it.changeStatus(2);
-		return ++it;  
+		return ++it;
 	}
 
 	TValue operator[](const TKey& key) {
@@ -220,21 +209,21 @@ public:
 
 	void clear() {
 		data.clear();
-		data.resize(5); 
+		data.resize(5);
 		amountOfElements = 0;
 		usedCells = 0;
 	}
 
-	int size() const { 
-		return amountOfElements; 
-	}
-	
-	int capacity() const { 
-		return data.size(); 
+	int size() const {
+		return amountOfElements;
 	}
 
-	bool empty() const { 
-		return amountOfElements == 0; 
+	int capacity() const {
+		return data.size();
+	}
+
+	bool empty() const {
+		return amountOfElements == 0;
 	}
 
 	bool isExist(const TKey& key) const {
