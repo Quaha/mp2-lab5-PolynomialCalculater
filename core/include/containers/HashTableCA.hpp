@@ -230,3 +230,11 @@ public:
         data.resize(capacity);
     }
 };
+
+template <typename TKey, typename TValue>
+class TestableHashTableCA : public HashTableCA<TKey, TValue> {
+
+    size_t getHash(const TKey& key, int MOD = 0) const {
+        return 0;
+    }
+};

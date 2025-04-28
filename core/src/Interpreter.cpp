@@ -395,7 +395,7 @@ void processFunctionData() {
 
 Interpreter::Interpreter(size_t container_id) {
 
-
+	initMemory(container_id);
 	processFunctionData();
 
 }

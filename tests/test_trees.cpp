@@ -15,7 +15,7 @@ protected:
 
 const int BIG_TESTS_SIZE = 3000;
 
-using TreeImplementations = ::testing::Types<RedBlackTree<int, int>, AVLTree<int, int>>;
+using TreeImplementations = ::testing::Types<TestableRedBlackTree<int, int>, AVLTree<int, int>>;
 TYPED_TEST_SUITE(SearchTreeTest, TreeImplementations);
 
 TYPED_TEST(SearchTreeTest, IsEmptyContainerAfterInitializing) {

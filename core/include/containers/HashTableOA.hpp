@@ -231,3 +231,12 @@ public:
 		return !(it == end());
 	}
 };
+
+template <typename TKey, typename TValue>
+class TestableHashTableOA : public HashTableOA<TKey, TValue> {
+
+	int getHash(const TKey& key) const {
+		return 0;
+	}
+};
+

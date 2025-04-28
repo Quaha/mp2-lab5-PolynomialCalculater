@@ -14,10 +14,12 @@ protected:
 using TableTypes = ::testing::Types<
 	OrderedTable<std::string, double>,
 	UnorderedTable<std::string, double>,
-	RedBlackTree<std::string, double>,
+	TestableRedBlackTree<std::string, double>,
 	AVLTree<std::string, double>,
 	HashTableCA<std::string, double>,
-	HashTableOA<std::string, double>
+	TestableHashTableCA<std::string, double>,
+	HashTableOA<std::string, double>,
+	TestableHashTableOA<std::string, double>
 >;
 
 TYPED_TEST_SUITE(TableTest, TableTypes);
