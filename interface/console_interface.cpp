@@ -5,6 +5,7 @@
 int main() {
 
 	size_t container_type;
+	string container_type_s;
 
 	while (true) {
 		try {
@@ -16,11 +17,19 @@ int main() {
 			std::cout << "4 - CA Hash Table" << std::endl;
 			std::cout << "5 - OA Hash Table" << std::endl;
 
-			std::cin >> container_type;
+			std::cin >> container_type_s;
 
+			/*
 			if (container_type > 5) {
 				throw std::out_of_range("Wrong container type!");
 			}
+			*/
+			if (container_type_s != "0" && container_type_s != "1" && container_type_s != "2" &&
+				container_type_s != "3" && container_type_s != "4" && container_type_s != "5") {
+				throw std::out_of_range("Wrong container type!");
+			}
+			container_type = stoi(container_type_s);
+			
 
 			std::cout << std::endl;
 
