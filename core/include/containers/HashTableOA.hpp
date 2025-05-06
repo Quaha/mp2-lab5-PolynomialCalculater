@@ -87,15 +87,38 @@ public:
 		}
 		Iterator(const std::vector<dataCell>* data, int pntr) : dataPntr(data), pntr(pntr) {}
 
+		/*
 		std::pair<TKey, TValue> operator*() {
 			if (pntr == dataPntr->size()) throw std::runtime_error("Can't get value from empty iterator");
 			return (*dataPntr)[pntr].element;
 		}
+		*/
+		std::pair<TKey, TValue>& operator*() {
+			if (pntr == dataPntr->size()) throw std::runtime_error("Can't get value from empty iterator");
+			return const_cast<std::pair<TKey, TValue>&>((*dataPntr)[pntr].element);
+		}
 
+		const std::pair<TKey, TValue>& operator*() const {
+			if (pntr == dataPntr->size()) throw std::runtime_error("Can't get value from empty iterator");
+			return (*dataPntr)[pntr].element;
+		}
+
+		/*
 		std::pair<TKey, TValue>* operator->() {
 			if (pntr == dataPntr->size()) throw std::runtime_error("Can't get value from empty iterator");
 			return &const_cast<dataCell&>((*dataPntr)[pntr]).element;
 		}
+		*/
+		std::pair<TKey, TValue>* operator->() {
+			if (pntr == dataPntr->size()) throw std::runtime_error("Can't get value from empty iterator");
+			return &const_cast<std::pair<TKey, TValue>&>((*dataPntr)[pntr].element);
+		}
+
+		const std::pair<TKey, TValue>* operator->() const {
+			if (pntr == dataPntr->size()) throw std::runtime_error("Can't get value from empty iterator");
+			return &((*dataPntr)[pntr].element);
+		}
+
 
 		bool operator==(const Iterator& it) const {
 			return pntr == it.pntr && dataPntr == it.dataPntr;
@@ -187,7 +210,7 @@ public:
 		return ++it;
 	}
 
-	TValue operator[](const TKey& key) {
+	TValue& operator[](const TKey& key) {
 		auto it = find(key);
 		if (it != end()) {
 			return (*it).second;
