@@ -17,6 +17,7 @@ public:
     virtual Data getVariable(const string& name) const = 0;
     virtual void setVariable(const string& name, const Data& value) = 0;
     virtual bool isVariableExists(const string& name) const = 0;
+    virtual void delVariable(const string& name) = 0;
 
     virtual shared_ptr<function_type> getFunction(const string& name) const = 0;
     virtual void setFunction(const string& name, shared_ptr<function_type> function) = 0;
@@ -45,6 +46,10 @@ public:
 
     bool isVariableExists(const string& name) const override{
         return program_data.isExist(name);
+    }
+
+    void delVariable(const string& name) override {
+        program_data.erase(name);
     }
 
     shared_ptr<function_type> getFunction(const string& name) const override {

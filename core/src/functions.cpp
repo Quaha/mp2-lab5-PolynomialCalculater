@@ -263,3 +263,20 @@ Data calcValue(const vector<Data>& parameters) {
     result.data = _rtos(res);
     return result;
 }
+
+Data delVar(const vector<Data>& parameters) {
+
+    if (parameters.size() != 1) {
+        throw std::invalid_argument("ERROR: invalid number of arguments!");
+    }
+
+    Data value = getValues(parameters)[0];
+
+    if (parameters[0].getType() != REAL_VARIABLE && parameters[0].getType() != POLYNOMIAL_VARIABLE) {
+        throw std::invalid_argument("ERROR: invalid type of argument!");
+    }
+
+    global_memory->delVariable(parameters[0].getData());
+
+    return value;
+}

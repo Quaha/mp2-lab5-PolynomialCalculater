@@ -442,6 +442,30 @@ TEST(Interpreter, PolynomialInterpretator20) {
     EXPECT_EQ(temp.getData(), result);
 }
 
+TEST(Interpreter, PolynomialInterpretatorVariable) {
+    Interpreter program(0);
+
+    string line1 = "a = 5";
+    program.execute(line1);
+
+    string line2 = "a";
+    int result = stoi(program.execute(line2).getData());
+
+    EXPECT_EQ(result, 5);
+}
+
+TEST(Interpreter, PolynomialInterpretatorDelVariable) {
+    Interpreter program(0);
+
+    string line1 = "a = 5";
+    program.execute(line1);
+
+    string line2 = "delVar(a)";
+    program.execute(line2);
+
+    EXPECT_ANY_THROW(program.execute("a"));
+}
+
 // Tests for error-handling
 
 TEST(Interpreter, ErrorHandling1) {

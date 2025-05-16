@@ -374,6 +374,7 @@ void processFunctionData() {
 	global_memory->setFunction("(", std::make_shared<function_type>(__LEFT__BRACKET__OPERATOR__));
 	global_memory->setFunction("sum(", std::make_shared<function_type>(sum));
 	global_memory->setFunction("calcValue(", std::make_shared<function_type>(calcValue));
+	global_memory->setFunction("delVar(", std::make_shared<function_type>(delVar));
 	global_memory->setFunction("+", std::make_shared<function_type>(__PLUS__OPERATOR__));
 	global_memory->setFunction("-", std::make_shared<function_type>(__MINUS__OPERATOR__));
 	global_memory->setFunction("*", std::make_shared<function_type>(__MULTIPLY__OPERATOR__));
@@ -383,6 +384,7 @@ void processFunctionData() {
 	global_memory->setPriority("(", 0);
 	global_memory->setPriority("sum(", 0);
 	global_memory->setPriority("calcValue(", 0);
+	global_memory->setPriority("delVar(", 0);
 	global_memory->setPriority("+", 100);
 	global_memory->setPriority("-", 100);
 	global_memory->setPriority("*", 200);
